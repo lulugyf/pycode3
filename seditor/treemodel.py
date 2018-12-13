@@ -4,7 +4,8 @@
 
 from PyQt5.QtCore import (QAbstractItemModel, QFile, QIODevice,
         QItemSelectionModel, QModelIndex, Qt)
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5 import QtGui
+from PyQt5.QtWidgets import QApplication, QMainWindow, QFileIconProvider
 
 import editabletreemodel_rc
 
@@ -90,7 +91,7 @@ class TreeModel(QAbstractItemModel):
         if type(data) == TreeItem:
             self.rootItem = data
             return
-
+        self.icon_qt = QtGui.QIcon("icons/qt.png")
         rootData = [header for header in headers]
         self.rootItem = TreeItem(rootData)
         self.setupModelData(data.split("\n"), self.rootItem)
@@ -101,6 +102,9 @@ class TreeModel(QAbstractItemModel):
     def data(self, index, role):
         if not index.isValid():
             return None
+        # print("role", role, "index:", index.row(), index.column(), Qt.DisplayRole)
+        # if role == Qt.DecorationRole and index.column() == 0:
+        #     return self.icon_qt
         if role != Qt.DisplayRole and role != Qt.EditRole:
             return None
         item = self.getItem(index)

@@ -283,6 +283,19 @@ class UISetup:
         tred.addAction(insertChildAction)
         tred.addAction(saveTreeAction)
 
+        self.filemenu = file
+
+    def addRecentToFileMenu(self, recent):
+        ''' 添加最近打开过的workdir 到 file菜单上'''
+        file = self.filemenu
+        file.addSeparator()
+        recent.reverse()
+        for r in recent:
+            rAction = QtWidgets.QAction(r, self)
+            rAction.setData(r)
+            rAction.triggered.connect(lambda _,path=r: self._openWorkDir( path ) ) # thrick is here
+            file.addAction(rAction)
+
 def showTableContextMenu(table, pos, cursor, self):
     menu = QtWidgets.QMenu(self)
 

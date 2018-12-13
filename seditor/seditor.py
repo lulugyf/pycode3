@@ -37,6 +37,7 @@ class Main(QtWidgets.QMainWindow,
     def __init__(self,parent=None):
         QtWidgets.QMainWindow.__init__(self,parent)
         self.filename = ""
+        self.basedir = ""
         self.changesSaved = True
         self.initUI()
 
@@ -51,6 +52,7 @@ class Main(QtWidgets.QMainWindow,
         self.initToolbar()
         self.initFormatbar()
         self.initMenubar()
+        self.addRecentToFileMenu(fs.FS.getRecentDirs())
 
         splitter1 = QtWidgets.QSplitter(Qt.Horizontal, self)
 
@@ -60,6 +62,8 @@ class Main(QtWidgets.QMainWindow,
         tree.doubleClicked.connect(self.itemOpen)
         tree.setContextMenuPolicy(Qt.CustomContextMenu)
         tree.customContextMenuRequested.connect(self.contextTree)
+        tree.setRootIsDecorated(True)
+        tree.setSortingEnabled(False)
         self.tree = tree
 
         splitter1.addWidget(self.tree)
@@ -93,6 +97,9 @@ class Main(QtWidgets.QMainWindow,
     def _openWorkDir(self, wd=None):
         if wd is None:
             wd = fs.FS.getRecentDirs()[-1]
+        if wd == self.basedir:
+            return
+        print("--openWorkDir:"+wd)
         tree = self.tree
         self.basedir = wd #
         self.fs = fs.FS(self.basedir)
@@ -100,7 +107,9 @@ class Main(QtWidgets.QMainWindow,
         tree.setModel(model)
         for i in range(2, model.columnCount()):
             tree.setColumnHidden(i, True)
-        tree.setColumnWidth(0, 160)
+        # w = tree.geometry().width()
+        # print("--w", w)
+        # tree.setColumnWidth(0, int(w*0.8))
 
         root = model.rootItem
         for row in range(root.childCount()):
@@ -114,7 +123,7 @@ class Main(QtWidgets.QMainWindow,
         t = ""
         if not changeSave:
             t = "*"
-        self.setWindowTitle("SEdit [%s] [%s] %s" % (self.basedir, editFile, t) )
+        self.setWindowTitle("SEditor [%s] [%s] %s" % (self.basedir, editFile, t) )
 
     def changed(self):
         if self.changesSaved:
@@ -176,7 +185,7 @@ class Main(QtWidgets.QMainWindow,
             menu.addAction(delNoteAction)
         elif data.type == fs.ItemType.DIR:
             addNoteAction = QtWidgets.QAction("Add Note", self)
-            addNoteAction.triggered.connect(lambda: self.addNote(model, index, data))
+            addNoteAction.triggered.connect(lambda: self.addNote(model, index, data.fpath))
             menu.addAction(addNoteAction)
             addFolderAction = QtWidgets.QAction("Add Folder", self)
             addFolderAction.triggered.connect(lambda: self.addFolder(model, index, data))

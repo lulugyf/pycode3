@@ -79,12 +79,12 @@ class TreeActions(object):
         for it in root: ii(it, "", fo)
         fo.close()
 
-    def addNote(self, model, index, data):
+    def addNote(self, model, index, parentFolder):
         text, ok = QtWidgets.QInputDialog.getText(self, "Input note name:",
                  "Note name:", QtWidgets.QLineEdit.Normal, "[new note]")
         if not ok:
             return
-        fpath = data.fpath + os.path.sep + text + ".writer"
+        fpath = parentFolder + os.path.sep + text + ".writer"
         if os.path.exists(fpath):
             QMessageBox.information(self, "Warning", "Note exists")
             return
@@ -114,7 +114,7 @@ class TreeActions(object):
         except Exception as e:
             QMessageBox.information(self, "Warning", "Folder exists")
             return
-        position = model.appendRow(fs.FSItem("[D]"+text, '', fpath, fs.ItemType.DIR), index)
+        position = model.appendRow(fs.FSItem(text+"/", '', fpath, fs.ItemType.DIR), index)
         self.tree.selectionModel().setCurrentIndex(model.index(position, 0, index),
                                                    QtCore.QItemSelectionModel.ClearAndSelect)
     def delFolder(self, model, index, data):
@@ -384,10 +384,13 @@ class ToolActions:
             return
         model = self.tree.model()
         data = model.getItem(index).itemData
-        if data.type != fs.ItemType.DIR:
-            QMessageBox.information(self, "Warning", "Select a folder first!")
-            return
-        self.addNote(model, index, data)
+        if data.type == fs.ItemType.FILE:
+            #QMessageBox.information(self, "Warning", "Select a folder first!")
+            parentFolder = os.path.dirname(data.fpath)
+            index = index.parent()
+        else:
+            parentFolder = data.fpath
+        self.addNote(model, index, parentFolder)
 
     def open(self):
         '''open a new workdir'''
@@ -403,7 +406,7 @@ class ToolActions:
                      "Open work directory", options=options)
         if not directory:
             return
-        #self.basedir = directory
+        directory = directory.replace("/", "\\")
         self._openWorkDir(directory)
 
     def save(self):

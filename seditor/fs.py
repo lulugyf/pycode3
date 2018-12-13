@@ -36,13 +36,13 @@ class FS:
             return None
         basename = os.path.basename(basedir)
         rootItem = TreeItem(['Name', "Date", "Path", ItemType.DIR])
-        baseItem = rootItem.appendChild(FSItem("[D]"+basename, '', basedir, ItemType.DIR))
+        baseItem = rootItem.appendChild(FSItem(basename+"/", '', basedir, ItemType.DIR))
         def children(path, parent):
             for n in os.listdir(path):
                 if n.startswith("."): continue
                 fpath = path + os.path.sep + n
                 if os.path.isdir(fpath):
-                    c = parent.appendChild(FSItem("[D]"+n, '', fpath, ItemType.DIR))
+                    c = parent.appendChild(FSItem(n+"/", '', fpath, ItemType.DIR))
                     children(fpath, c)
                 elif n.endswith(".writer"):
                     n = n[:-7]
@@ -114,6 +114,8 @@ class FS:
         recents = FS.getRecentDirs()
         if path == recents[-1]:
             return
+        if path in recents:
+            del recents[recents.index(path)]
         recents.append(path)
         if len(recents) > 10:
             recents = recents[-10:]
