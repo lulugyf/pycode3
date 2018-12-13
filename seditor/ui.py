@@ -11,273 +11,280 @@ from PyQt5.QtCore import Qt
 
 from ext import *
 
-def initToolbar(self):
-    self.newAction = QtWidgets.QAction(QtGui.QIcon("icons/new.png"), "New", self)
-    self.newAction.setShortcut("Ctrl+N")
-    self.newAction.setStatusTip("Create a new document from scratch.")
-    self.newAction.triggered.connect(self.new)
-
-    self.openAction = QtWidgets.QAction(QtGui.QIcon("icons/open.png"), "Open file", self)
-    self.openAction.setStatusTip("Open existing document")
-    self.openAction.setShortcut("Ctrl+O")
-    self.openAction.triggered.connect(self.open)
-
-    self.saveAction = QtWidgets.QAction(QtGui.QIcon("icons/save.png"), "Save", self)
-    self.saveAction.setStatusTip("Save document")
-    self.saveAction.setShortcut("Ctrl+S")
-    self.saveAction.triggered.connect(self.save)
-
-    self.printAction = QtWidgets.QAction(QtGui.QIcon("icons/print.png"), "Print document", self)
-    self.printAction.setStatusTip("Print document")
-    self.printAction.setShortcut("Ctrl+P")
-    self.printAction.triggered.connect(self.printHandler)
-
-    self.previewAction = QtWidgets.QAction(QtGui.QIcon("icons/preview.png"), "Page view", self)
-    self.previewAction.setStatusTip("Preview page before printing")
-    self.previewAction.setShortcut("Ctrl+Shift+P")
-    self.previewAction.triggered.connect(self.preview)
-
-    self.findAction = QtWidgets.QAction(QtGui.QIcon("icons/find.png"), "Find and replace", self)
-    self.findAction.setStatusTip("Find and replace words in your document")
-    self.findAction.setShortcut("Ctrl+F")
-    self.findAction.triggered.connect(find.Find(self).show)
-
-    self.cutAction = QtWidgets.QAction(QtGui.QIcon("icons/cut.png"), "Cut to clipboard", self)
-    self.cutAction.setStatusTip("Delete and copy text to clipboard")
-    self.cutAction.setShortcut("Ctrl+X")
-    self.cutAction.triggered.connect(self.text.cut)
+class UISetup:
+    def initToolbar(self):
+        self.newAction = QtWidgets.QAction(QtGui.QIcon("icons/new.png"), "New", self)
+        self.newAction.setShortcut("Ctrl+N")
+        self.newAction.setStatusTip("Create a new document from scratch.")
+        self.newAction.triggered.connect(self.new)
+
+        self.openAction = QtWidgets.QAction(QtGui.QIcon("icons/open.png"), "Open file", self)
+        self.openAction.setStatusTip("Open existing document")
+        self.openAction.setShortcut("Ctrl+O")
+        self.openAction.triggered.connect(self.open)
+
+        self.saveAction = QtWidgets.QAction(QtGui.QIcon("icons/save.png"), "Save", self)
+        self.saveAction.setStatusTip("Save document")
+        self.saveAction.setShortcut("Ctrl+S")
+        self.saveAction.triggered.connect(self.save)
+
+        self.printAction = QtWidgets.QAction(QtGui.QIcon("icons/print.png"), "Print document", self)
+        self.printAction.setStatusTip("Print document")
+        self.printAction.setShortcut("Ctrl+P")
+        self.printAction.triggered.connect(self.printHandler)
+
+        self.previewAction = QtWidgets.QAction(QtGui.QIcon("icons/preview.png"), "Page view", self)
+        self.previewAction.setStatusTip("Preview page before printing")
+        self.previewAction.setShortcut("Ctrl+Shift+P")
+        self.previewAction.triggered.connect(self.preview)
+
+        self.findAction = QtWidgets.QAction(QtGui.QIcon("icons/find.png"), "Find and replace", self)
+        self.findAction.setStatusTip("Find and replace words in your document")
+        self.findAction.setShortcut("Ctrl+F")
+        self.findAction.triggered.connect(find.Find(self).show)
+
+        self.cutAction = QtWidgets.QAction(QtGui.QIcon("icons/cut.png"), "Cut to clipboard", self)
+        self.cutAction.setStatusTip("Delete and copy text to clipboard")
+        self.cutAction.setShortcut("Ctrl+X")
+        self.cutAction.triggered.connect(self.text.cut)
+
+        self.copyAction = QtWidgets.QAction(QtGui.QIcon("icons/copy.png"), "Copy to clipboard", self)
+        self.copyAction.setStatusTip("Copy text to clipboard")
+        self.copyAction.setShortcut("Ctrl+C")
+        self.copyAction.triggered.connect(self.text.copy)
+
+        self.pasteAction = QtWidgets.QAction(QtGui.QIcon("icons/paste.png"), "Paste from clipboard", self)
+        self.pasteAction.setStatusTip("Paste text from clipboard")
+        self.pasteAction.setShortcut("Ctrl+V")
+        self.pasteAction.triggered.connect(self.text.paste)
+
+        self.undoAction = QtWidgets.QAction(QtGui.QIcon("icons/undo.png"), "Undo last action", self)
+        self.undoAction.setStatusTip("Undo last action")
+        self.undoAction.setShortcut("Ctrl+Z")
+        self.undoAction.triggered.connect(self.text.undo)
 
-    self.copyAction = QtWidgets.QAction(QtGui.QIcon("icons/copy.png"), "Copy to clipboard", self)
-    self.copyAction.setStatusTip("Copy text to clipboard")
-    self.copyAction.setShortcut("Ctrl+C")
-    self.copyAction.triggered.connect(self.text.copy)
+        self.redoAction = QtWidgets.QAction(QtGui.QIcon("icons/redo.png"), "Redo last undone thing", self)
+        self.redoAction.setStatusTip("Redo last undone thing")
+        self.redoAction.setShortcut("Ctrl+Y")
+        self.redoAction.triggered.connect(self.text.redo)
 
-    self.pasteAction = QtWidgets.QAction(QtGui.QIcon("icons/paste.png"), "Paste from clipboard", self)
-    self.pasteAction.setStatusTip("Paste text from clipboard")
-    self.pasteAction.setShortcut("Ctrl+V")
-    self.pasteAction.triggered.connect(self.text.paste)
+        dateTimeAction = QtWidgets.QAction(QtGui.QIcon("icons/calender.png"), "Insert current date/time", self)
+        dateTimeAction.setStatusTip("Insert current date/time")
+        dateTimeAction.setShortcut("Ctrl+D")
+        dateTimeAction.triggered.connect(datetime.DateTime(self).show)
 
-    self.undoAction = QtWidgets.QAction(QtGui.QIcon("icons/undo.png"), "Undo last action", self)
-    self.undoAction.setStatusTip("Undo last action")
-    self.undoAction.setShortcut("Ctrl+Z")
-    self.undoAction.triggered.connect(self.text.undo)
+        wordCountAction = QtWidgets.QAction(QtGui.QIcon("icons/count.png"), "See word/symbol count", self)
+        wordCountAction.setStatusTip("See word/symbol count")
+        wordCountAction.setShortcut("Ctrl+W")
+        wordCountAction.triggered.connect(self.wordCount)
 
-    self.redoAction = QtWidgets.QAction(QtGui.QIcon("icons/redo.png"), "Redo last undone thing", self)
-    self.redoAction.setStatusTip("Redo last undone thing")
-    self.redoAction.setShortcut("Ctrl+Y")
-    self.redoAction.triggered.connect(self.text.redo)
+        tableAction = QtWidgets.QAction(QtGui.QIcon("icons/table.png"), "Insert table", self)
+        tableAction.setStatusTip("Insert table")
+        tableAction.setShortcut("Ctrl+T")
+        tableAction.triggered.connect(table.Table(self).show)
 
-    dateTimeAction = QtWidgets.QAction(QtGui.QIcon("icons/calender.png"), "Insert current date/time", self)
-    dateTimeAction.setStatusTip("Insert current date/time")
-    dateTimeAction.setShortcut("Ctrl+D")
-    dateTimeAction.triggered.connect(datetime.DateTime(self).show)
+        imageAction = QtWidgets.QAction(QtGui.QIcon("icons/image.png"), "Insert image", self)
+        imageAction.setStatusTip("Insert image")
+        imageAction.setShortcut("Ctrl+Shift+I")
+        imageAction.triggered.connect(self.insertImage)
 
-    wordCountAction = QtWidgets.QAction(QtGui.QIcon("icons/count.png"), "See word/symbol count", self)
-    wordCountAction.setStatusTip("See word/symbol count")
-    wordCountAction.setShortcut("Ctrl+W")
-    wordCountAction.triggered.connect(self.wordCount)
+        pasteimgAction = QtWidgets.QAction(QtGui.QIcon("icons/pasteimg.jpg"), "Insert Clipboard", self)
+        pasteimgAction.setStatusTip("Insert image from Clipboard")
+        pasteimgAction.setShortcut("Ctrl+Shift+I")
+        pasteimgAction.triggered.connect(self.pasteImage)
 
-    tableAction = QtWidgets.QAction(QtGui.QIcon("icons/table.png"), "Insert table", self)
-    tableAction.setStatusTip("Insert table")
-    tableAction.setShortcut("Ctrl+T")
-    tableAction.triggered.connect(table.Table(self).show)
+        bulletAction = QtWidgets.QAction(QtGui.QIcon("icons/bullet.png"), "Insert bullet List", self)
+        bulletAction.setStatusTip("Insert bullet list")
+        bulletAction.setShortcut("Ctrl+Shift+B")
+        bulletAction.triggered.connect(self.bulletList)
 
-    imageAction = QtWidgets.QAction(QtGui.QIcon("icons/image.png"), "Insert image", self)
-    imageAction.setStatusTip("Insert image")
-    imageAction.setShortcut("Ctrl+Shift+I")
-    imageAction.triggered.connect(self.insertImage)
+        numberedAction = QtWidgets.QAction(QtGui.QIcon("icons/number.png"), "Insert numbered List", self)
+        numberedAction.setStatusTip("Insert numbered list")
+        numberedAction.setShortcut("Ctrl+Shift+L")
+        numberedAction.triggered.connect(self.numberList)
 
-    bulletAction = QtWidgets.QAction(QtGui.QIcon("icons/bullet.png"), "Insert bullet List", self)
-    bulletAction.setStatusTip("Insert bullet list")
-    bulletAction.setShortcut("Ctrl+Shift+B")
-    bulletAction.triggered.connect(self.bulletList)
+        self.toolbar = self.addToolBar("Options")
 
-    numberedAction = QtWidgets.QAction(QtGui.QIcon("icons/number.png"), "Insert numbered List", self)
-    numberedAction.setStatusTip("Insert numbered list")
-    numberedAction.setShortcut("Ctrl+Shift+L")
-    numberedAction.triggered.connect(self.numberList)
+        self.toolbar.addAction(self.newAction)
+        self.toolbar.addAction(self.openAction)
+        self.toolbar.addAction(self.saveAction)
 
-    self.toolbar = self.addToolBar("Options")
+        self.toolbar.addSeparator()
 
-    self.toolbar.addAction(self.newAction)
-    self.toolbar.addAction(self.openAction)
-    self.toolbar.addAction(self.saveAction)
+        self.toolbar.addAction(self.printAction)
+        self.toolbar.addAction(self.previewAction)
 
-    self.toolbar.addSeparator()
+        self.toolbar.addSeparator()
 
-    self.toolbar.addAction(self.printAction)
-    self.toolbar.addAction(self.previewAction)
+        self.toolbar.addAction(self.cutAction)
+        self.toolbar.addAction(self.copyAction)
+        self.toolbar.addAction(self.pasteAction)
+        self.toolbar.addAction(self.undoAction)
+        self.toolbar.addAction(self.redoAction)
 
-    self.toolbar.addSeparator()
+        self.toolbar.addSeparator()
 
-    self.toolbar.addAction(self.cutAction)
-    self.toolbar.addAction(self.copyAction)
-    self.toolbar.addAction(self.pasteAction)
-    self.toolbar.addAction(self.undoAction)
-    self.toolbar.addAction(self.redoAction)
+        self.toolbar.addAction(self.findAction)
+        self.toolbar.addAction(dateTimeAction)
+        self.toolbar.addAction(wordCountAction)
+        self.toolbar.addAction(tableAction)
+        self.toolbar.addAction(imageAction)
+        self.toolbar.addAction(pasteimgAction)
 
-    self.toolbar.addSeparator()
+        self.toolbar.addSeparator()
 
-    self.toolbar.addAction(self.findAction)
-    self.toolbar.addAction(dateTimeAction)
-    self.toolbar.addAction(wordCountAction)
-    self.toolbar.addAction(tableAction)
-    self.toolbar.addAction(imageAction)
+        self.toolbar.addAction(bulletAction)
+        self.toolbar.addAction(numberedAction)
 
-    self.toolbar.addSeparator()
+        self.addToolBarBreak()
 
-    self.toolbar.addAction(bulletAction)
-    self.toolbar.addAction(numberedAction)
+    def initFormatbar(self):
 
-    self.addToolBarBreak()
+        fontBox = QtWidgets.QFontComboBox(self)
+        fontBox.currentFontChanged.connect(lambda font: self.text.setCurrentFont(font))
 
-def initFormatbar(self):
+        fontSize = QtWidgets.QSpinBox(self)
 
-    fontBox = QtWidgets.QFontComboBox(self)
-    fontBox.currentFontChanged.connect(lambda font: self.text.setCurrentFont(font))
+        # Will display " pt" after each value
+        fontSize.setSuffix(" pt")
 
-    fontSize = QtWidgets.QSpinBox(self)
+        fontSize.valueChanged.connect(lambda size: self.text.setFontPointSize(size))
 
-    # Will display " pt" after each value
-    fontSize.setSuffix(" pt")
+        fontSize.setValue(14)
 
-    fontSize.valueChanged.connect(lambda size: self.text.setFontPointSize(size))
+        fontColor = QtWidgets.QAction(QtGui.QIcon("icons/font-color.png"),"Change font color",self)
+        fontColor.triggered.connect(self.fontColorChanged)
 
-    fontSize.setValue(14)
+        boldAction = QtWidgets.QAction(QtGui.QIcon("icons/bold.png"),"Bold",self)
+        boldAction.triggered.connect(self.bold)
 
-    fontColor = QtWidgets.QAction(QtGui.QIcon("icons/font-color.png"),"Change font color",self)
-    fontColor.triggered.connect(self.fontColorChanged)
+        italicAction = QtWidgets.QAction(QtGui.QIcon("icons/italic.png"),"Italic",self)
+        italicAction.triggered.connect(self.italic)
 
-    boldAction = QtWidgets.QAction(QtGui.QIcon("icons/bold.png"),"Bold",self)
-    boldAction.triggered.connect(self.bold)
+        underlAction = QtWidgets.QAction(QtGui.QIcon("icons/underline.png"),"Underline",self)
+        underlAction.triggered.connect(self.underline)
 
-    italicAction = QtWidgets.QAction(QtGui.QIcon("icons/italic.png"),"Italic",self)
-    italicAction.triggered.connect(self.italic)
+        strikeAction = QtWidgets.QAction(QtGui.QIcon("icons/strike.png"),"Strike-out",self)
+        strikeAction.triggered.connect(self.strike)
 
-    underlAction = QtWidgets.QAction(QtGui.QIcon("icons/underline.png"),"Underline",self)
-    underlAction.triggered.connect(self.underline)
+        superAction = QtWidgets.QAction(QtGui.QIcon("icons/superscript.png"),"Superscript",self)
+        superAction.triggered.connect(self.superScript)
 
-    strikeAction = QtWidgets.QAction(QtGui.QIcon("icons/strike.png"),"Strike-out",self)
-    strikeAction.triggered.connect(self.strike)
+        subAction = QtWidgets.QAction(QtGui.QIcon("icons/subscript.png"),"Subscript",self)
+        subAction.triggered.connect(self.subScript)
 
-    superAction = QtWidgets.QAction(QtGui.QIcon("icons/superscript.png"),"Superscript",self)
-    superAction.triggered.connect(self.superScript)
+        alignLeft = QtWidgets.QAction(QtGui.QIcon("icons/align-left.png"),"Align left",self)
+        alignLeft.triggered.connect(self.alignLeft)
 
-    subAction = QtWidgets.QAction(QtGui.QIcon("icons/subscript.png"),"Subscript",self)
-    subAction.triggered.connect(self.subScript)
+        alignCenter = QtWidgets.QAction(QtGui.QIcon("icons/align-center.png"),"Align center",self)
+        alignCenter.triggered.connect(self.alignCenter)
 
-    alignLeft = QtWidgets.QAction(QtGui.QIcon("icons/align-left.png"),"Align left",self)
-    alignLeft.triggered.connect(self.alignLeft)
+        alignRight = QtWidgets.QAction(QtGui.QIcon("icons/align-right.png"),"Align right",self)
+        alignRight.triggered.connect(self.alignRight)
 
-    alignCenter = QtWidgets.QAction(QtGui.QIcon("icons/align-center.png"),"Align center",self)
-    alignCenter.triggered.connect(self.alignCenter)
+        alignJustify = QtWidgets.QAction(QtGui.QIcon("icons/align-justify.png"),"Align justify",self)
+        alignJustify.triggered.connect(self.alignJustify)
 
-    alignRight = QtWidgets.QAction(QtGui.QIcon("icons/align-right.png"),"Align right",self)
-    alignRight.triggered.connect(self.alignRight)
+        indentAction = QtWidgets.QAction(QtGui.QIcon("icons/indent.png"),"Indent Area",self)
+        indentAction.setShortcut("Ctrl+Tab")
+        indentAction.triggered.connect(self.indent)
 
-    alignJustify = QtWidgets.QAction(QtGui.QIcon("icons/align-justify.png"),"Align justify",self)
-    alignJustify.triggered.connect(self.alignJustify)
+        dedentAction = QtWidgets.QAction(QtGui.QIcon("icons/dedent.png"),"Dedent Area",self)
+        dedentAction.setShortcut("Shift+Tab")
+        dedentAction.triggered.connect(self.dedent)
 
-    indentAction = QtWidgets.QAction(QtGui.QIcon("icons/indent.png"),"Indent Area",self)
-    indentAction.setShortcut("Ctrl+Tab")
-    indentAction.triggered.connect(self.indent)
+        backColor = QtWidgets.QAction(QtGui.QIcon("icons/highlight.png"),"Change background color",self)
+        backColor.triggered.connect(self.highlight)
 
-    dedentAction = QtWidgets.QAction(QtGui.QIcon("icons/dedent.png"),"Dedent Area",self)
-    dedentAction.setShortcut("Shift+Tab")
-    dedentAction.triggered.connect(self.dedent)
+        self.formatbar = self.addToolBar("Format")
 
-    backColor = QtWidgets.QAction(QtGui.QIcon("icons/highlight.png"),"Change background color",self)
-    backColor.triggered.connect(self.highlight)
+        self.formatbar.addWidget(fontBox)
+        self.formatbar.addWidget(fontSize)
 
-    self.formatbar = self.addToolBar("Format")
+        self.formatbar.addSeparator()
 
-    self.formatbar.addWidget(fontBox)
-    self.formatbar.addWidget(fontSize)
+        self.formatbar.addAction(fontColor)
+        self.formatbar.addAction(backColor)
 
-    self.formatbar.addSeparator()
+        self.formatbar.addSeparator()
 
-    self.formatbar.addAction(fontColor)
-    self.formatbar.addAction(backColor)
+        self.formatbar.addAction(boldAction)
+        self.formatbar.addAction(italicAction)
+        self.formatbar.addAction(underlAction)
+        self.formatbar.addAction(strikeAction)
+        self.formatbar.addAction(superAction)
+        self.formatbar.addAction(subAction)
 
-    self.formatbar.addSeparator()
+        self.formatbar.addSeparator()
 
-    self.formatbar.addAction(boldAction)
-    self.formatbar.addAction(italicAction)
-    self.formatbar.addAction(underlAction)
-    self.formatbar.addAction(strikeAction)
-    self.formatbar.addAction(superAction)
-    self.formatbar.addAction(subAction)
+        self.formatbar.addAction(alignLeft)
+        self.formatbar.addAction(alignCenter)
+        self.formatbar.addAction(alignRight)
+        self.formatbar.addAction(alignJustify)
 
-    self.formatbar.addSeparator()
+        self.formatbar.addSeparator()
 
-    self.formatbar.addAction(alignLeft)
-    self.formatbar.addAction(alignCenter)
-    self.formatbar.addAction(alignRight)
-    self.formatbar.addAction(alignJustify)
+        self.formatbar.addAction(indentAction)
+        self.formatbar.addAction(dedentAction)
 
-    self.formatbar.addSeparator()
+    def initMenubar(self):
+        menubar = self.menuBar()
 
-    self.formatbar.addAction(indentAction)
-    self.formatbar.addAction(dedentAction)
+        file = menubar.addMenu("File")
+        edit = menubar.addMenu("Edit")
+        tred = menubar.addMenu("Tree")
+        view = menubar.addMenu("View")
 
-def initMenubar(self):
+        # Add the most important actions to the menubar
 
-    menubar = self.menuBar()
+        file.addAction(self.newAction)
+        file.addAction(self.openAction)
+        file.addAction(self.saveAction)
+        file.addAction(self.printAction)
+        file.addAction(self.previewAction)
 
-    file = menubar.addMenu("File")
-    edit = menubar.addMenu("Edit")
-    tred = menubar.addMenu("Tree")
-    view = menubar.addMenu("View")
+        edit.addAction(self.undoAction)
+        edit.addAction(self.redoAction)
+        edit.addAction(self.cutAction)
+        edit.addAction(self.copyAction)
+        edit.addAction(self.pasteAction)
+        edit.addAction(self.findAction)
 
-    # Add the most important actions to the menubar
+        # Toggling actions for the various bars
+        toolbarAction = QtWidgets.QAction("Toggle Toolbar",self)
+        toolbarAction.triggered.connect(self.toggleToolbar)
 
-    file.addAction(self.newAction)
-    file.addAction(self.openAction)
-    file.addAction(self.saveAction)
-    file.addAction(self.printAction)
-    file.addAction(self.previewAction)
+        formatbarAction = QtWidgets.QAction("Toggle Formatbar",self)
+        formatbarAction.triggered.connect(self.toggleFormatbar)
 
-    edit.addAction(self.undoAction)
-    edit.addAction(self.redoAction)
-    edit.addAction(self.cutAction)
-    edit.addAction(self.copyAction)
-    edit.addAction(self.pasteAction)
-    edit.addAction(self.findAction)
+        statusbarAction = QtWidgets.QAction("Toggle Statusbar",self)
+        statusbarAction.triggered.connect(self.toggleStatusbar)
 
-    # Toggling actions for the various bars
-    toolbarAction = QtWidgets.QAction("Toggle Toolbar",self)
-    toolbarAction.triggered.connect(self.toggleToolbar)
+        view.addAction(toolbarAction)
+        view.addAction(formatbarAction)
+        view.addAction(statusbarAction)
 
-    formatbarAction = QtWidgets.QAction("Toggle Formatbar",self)
-    formatbarAction.triggered.connect(self.toggleFormatbar)
+        insertRowAction = QtWidgets.QAction("Add Document", self)
+        insertRowAction.setShortcut("Ctrl+I, R")
+        insertRowAction.triggered.connect(self.insertTreeRow)
+        #print("----", type(self.insertTreeRow))
+        removeRowAction = QtWidgets.QAction("Remove Row", self)
+        removeRowAction.setShortcut("Ctrl+R, R")
+        removeRowAction.triggered.connect(self.removeTreeRow)
+        insertChildAction = QtWidgets.QAction("Insert Child", self)
+        insertChildAction.setShortcut( "Ctrl+N" )
+        insertChildAction.triggered.connect(self.insertTreeChild)
 
-    statusbarAction = QtWidgets.QAction("Toggle Statusbar",self)
-    statusbarAction.triggered.connect(self.toggleStatusbar)
+        saveTreeAction = QtWidgets.QAction("Save Tree", self)
+        saveTreeAction.triggered.connect(self.saveTree)
 
-    view.addAction(toolbarAction)
-    view.addAction(formatbarAction)
-    view.addAction(statusbarAction)
-
-    insertRowAction = QtWidgets.QAction("Insert Row", self)
-    insertRowAction.setShortcut("Ctrl+I, R")
-    insertRowAction.triggered.connect(self.insertTreeRow)
-    removeRowAction = QtWidgets.QAction("Remove Row", self)
-    removeRowAction.setShortcut("Ctrl+R, R")
-    removeRowAction.triggered.connect(self.removeTreeRow)
-    insertChildAction = QtWidgets.QAction("Insert Child", self)
-    insertChildAction.setShortcut( "Ctrl+N" )
-    insertChildAction.triggered.connect(self.insertTreeChild)
-
-    saveTreeAction = QtWidgets.QAction("Save Tree", self)
-    saveTreeAction.triggered.connect(self.saveTree)
-
-    tred.addAction(insertRowAction)
-    tred.addAction(removeRowAction)
-    tred.addAction(insertChildAction)
-    tred.addAction(saveTreeAction)
+        tred.addAction(insertRowAction)
+        tred.addAction(removeRowAction)
+        tred.addAction(insertChildAction)
+        tred.addAction(saveTreeAction)
 
 def showTableContextMenu(table, pos, cursor, self):
-    menu = QtWidgets.QMenu(self)  # QtGui.QMenu(self)
+    menu = QtWidgets.QMenu(self)
 
     appendRowAction = QtWidgets.QAction("Append row", self)
     appendRowAction.triggered.connect(lambda: table.appendRows(1))
@@ -311,9 +318,7 @@ def showTableContextMenu(table, pos, cursor, self):
     # Only allow splitting if the current cell is larger
     # than a normal cell
     if cell.rowSpan() > 1 or cell.columnSpan() > 1:
-
         splitAction.triggered.connect(lambda: table.splitCell(cell.row(), cell.column(), 1, 1))
-
     else:
         splitAction.setEnabled(False)
 
