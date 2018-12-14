@@ -14,7 +14,8 @@ class DateTime(QtWidgets.QDialog):
 
         self.parent = parent
 
-        self.formats = ["%A, %d. %B %Y %H:%M",
+        self.formats = ["%Y-%m-%d %H:%M",
+            "%A, %d. %B %Y %H:%M",
                         "%A, %d. %B %Y",
                         "%d. %B %Y %H:%M",
                         "%d.%m.%Y %H:%M",

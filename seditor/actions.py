@@ -476,8 +476,8 @@ class ToolActions:
         # Mortals like 1-indexed things
         line = cursor.blockNumber() + 1
         col = cursor.columnNumber()
-
         self.statusbar.showMessage("Line: {} | Column: {}".format(line,col))
+        self.fs.setConf("cursor_%s"%self.filename, "%d"%cursor.position()) #保存当前的光标位置, 重新打开时恢复位置
 
     def wordCount(self):
         wc = wordcount.WordCount(self)

@@ -9,7 +9,7 @@ from PyQt5 import QtPrintSupport
 from PyQt5 import QtGui, QtCore
 from PyQt5.QtCore import Qt
 
-from ext import *
+from ext import datetime, find, table, wordcount
 
 class UISetup:
     def initToolbar(self):
@@ -156,9 +156,11 @@ class UISetup:
         fontColor.triggered.connect(self.fontColorChanged)
 
         boldAction = QtWidgets.QAction(QtGui.QIcon("icons/bold.png"),"Bold",self)
+        boldAction.setShortcut("Ctrl+B")
         boldAction.triggered.connect(self.bold)
 
         italicAction = QtWidgets.QAction(QtGui.QIcon("icons/italic.png"),"Italic",self)
+        italicAction.setShortcut("Ctrl+I")
         italicAction.triggered.connect(self.italic)
 
         underlAction = QtWidgets.QAction(QtGui.QIcon("icons/underline.png"),"Underline",self)

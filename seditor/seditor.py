@@ -7,21 +7,12 @@ os.putenv('QT_PLUGIN_PATH', 'D:\dev\Anaconda3\Library\plugins')
 
 #  http://zetcode.com/gui/pyqt5/    学习
 
-
-#PYQT5 PyQt4’s QtGui module has been split into PyQt5’s QtGui, QtPrintSupport and QtWidgets modules
-
 from PyQt5 import QtWidgets
-#PYQT5 QMainWindow, QApplication, QAction, QFontComboBox, QSpinBox, QTextEdit, QMessageBox
-#PYQT5 QFileDialog, QColorDialog, QDialog
-
-
-#PYQT5 QPrintPreviewDialog, QPrintDialog
-
 from PyQt5 import QtGui, QtCore
-from PyQt5.QtCore import (QAbstractItemModel, QFile, QIODevice,
-        QItemSelectionModel, QModelIndex, Qt)
+from PyQt5.QtCore import Qt
 
-
+codepath = os.path.dirname(__file__)
+sys.path.insert(0, codepath)
 import ui
 import actions
 import fs
@@ -54,7 +45,6 @@ class Main(QtWidgets.QMainWindow,
         self.initMenubar()
         self.addRecentToFileMenu(fs.FS.getRecentDirs())
 
-        splitter1 = QtWidgets.QSplitter(Qt.Horizontal, self)
 
         tree = QtWidgets.QTreeView(self)
 
@@ -66,10 +56,6 @@ class Main(QtWidgets.QMainWindow,
         tree.setSortingEnabled(False)
         self.tree = tree
 
-        splitter1.addWidget(self.tree)
-        splitter1.addWidget(text)
-
-        self.setCentralWidget(splitter1) # self.text)
 
         # Initialize a statusbar for the window
         self.statusbar = self.statusBar()
@@ -83,8 +69,11 @@ class Main(QtWidgets.QMainWindow,
         text.customContextMenuRequested.connect(self.contextNote)
         text.textChanged.connect(self.changed)
 
-        # w, h = 1030, 800
-        # self.setGeometry(100,100,w,h)
+        splitter1 = QtWidgets.QSplitter(Qt.Horizontal, self)
+        splitter1.addWidget(self.tree)
+        splitter1.addWidget(text)
+        self.setCentralWidget(splitter1)
+
         w = self.geometry().width()
         tree_percent = 0.2
         splitter1.setSizes([int(w*tree_percent), int(w*(1-tree_percent))])
@@ -175,6 +164,12 @@ class Main(QtWidgets.QMainWindow,
         self._title()
         self.fs.setConf("last_open", self.filename)
 
+        # 恢复光标位置
+        curpos = self.fs.getConf("cursor_%s"%self.filename)
+        if curpos != '':
+            cursor = self.text.textCursor()
+            cursor.setPosition(int(curpos))
+            self.text.setTextCursor(cursor)
 
 def main():
     app = QtWidgets.QApplication(sys.argv)
