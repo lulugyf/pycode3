@@ -1,0 +1,892 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0-SNAPSHOT">
+  <zoom_level>13</zoom_level>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>91</x>
+      <y>286</y>
+      <w>130</w>
+      <h>39</h>
+    </coordinates>
+    <panel_attributes>_消费者客户端_
+bg=orange</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>403</x>
+      <y>286</y>
+      <w>130</w>
+      <h>39</h>
+    </coordinates>
+    <panel_attributes>_Broker_
+bg=orange</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>715</x>
+      <y>286</y>
+      <w>130</w>
+      <h>39</h>
+    </coordinates>
+    <panel_attributes>_BLE_
+bg=orange</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>455</x>
+      <y>312</y>
+      <w>39</w>
+      <h>949</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;710.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>767</x>
+      <y>312</y>
+      <w>39</w>
+      <h>949</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;710.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>143</x>
+      <y>338</y>
+      <w>351</w>
+      <h>65</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+fetch
+(topic client locktime)</panel_attributes>
+    <additional_attributes>250.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>455</x>
+      <y>923</y>
+      <w>351</w>
+      <h>52</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+返回MessageID</panel_attributes>
+    <additional_attributes>10.0;20.0;250.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>455</x>
+      <y>403</y>
+      <w>351</w>
+      <h>65</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+消费请求
+(topic client locktime)</panel_attributes>
+    <additional_attributes>250.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>767</x>
+      <y>442</y>
+      <w>325</w>
+      <h>65</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+按序取ID (略过未到锁定时间的)</panel_attributes>
+    <additional_attributes>10.0;10.0;40.0;10.0;40.0;30.0;10.0;30.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>143</x>
+      <y>312</y>
+      <w>39</w>
+      <h>949</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;710.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>767</x>
+      <y>741</y>
+      <w>182</w>
+      <h>65</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+锁定locktime</panel_attributes>
+    <additional_attributes>10.0;10.0;40.0;10.0;40.0;30.0;10.0;30.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>0</x>
+      <y>0</y>
+      <w>195</w>
+      <h>143</h>
+    </coordinates>
+    <panel_attributes>消费者时序图
+
+2018-12-14</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>1053</x>
+      <y>286</y>
+      <w>130</w>
+      <h>39</h>
+    </coordinates>
+    <panel_attributes>_Store_
+bg=orange</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1105</x>
+      <y>312</y>
+      <w>39</w>
+      <h>949</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;710.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>455</x>
+      <y>975</y>
+      <w>689</w>
+      <h>52</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+select from MesageStore_?</panel_attributes>
+    <additional_attributes>510.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>78</x>
+      <y>208</y>
+      <w>273</w>
+      <h>65</h>
+    </coordinates>
+    <panel_attributes>messagestore_? 表数据缺失
+的 情况展示
+bg=#8888ff</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>455</x>
+      <y>364</y>
+      <w>117</w>
+      <h>65</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+验证</panel_attributes>
+    <additional_attributes>10.0;10.0;40.0;10.0;40.0;30.0;10.0;30.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>455</x>
+      <y>949</y>
+      <w>169</w>
+      <h>65</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+按ID取Body</panel_attributes>
+    <additional_attributes>10.0;10.0;40.0;10.0;40.0;30.0;10.0;30.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>455</x>
+      <y>1001</y>
+      <w>689</w>
+      <h>65</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+
+not found
+fg=red</panel_attributes>
+    <additional_attributes>510.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>143</x>
+      <y>1014</y>
+      <w>351</w>
+      <h>52</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+operation_error
+fg=red</panel_attributes>
+    <additional_attributes>250.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>767</x>
+      <y>793</y>
+      <w>273</w>
+      <h>65</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+累加在途消息数process</panel_attributes>
+    <additional_attributes>10.0;10.0;40.0;10.0;40.0;30.0;10.0;30.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLFrame</id>
+    <coordinates>
+      <x>338</x>
+      <y>858</y>
+      <w>585</w>
+      <h>299</h>
+    </coordinates>
+    <panel_attributes>判断是否达到最大在途数max_process
+bg=#bbaaaa
+fg=blue
+--
+if process &lt; max_process
+-.
+
+
+
+
+
+
+else
+-.</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>455</x>
+      <y>1079</y>
+      <w>351</w>
+      <h>52</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+返回NO_MORE_MESSAGE</panel_attributes>
+    <additional_attributes>10.0;20.0;250.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>143</x>
+      <y>1105</y>
+      <w>351</w>
+      <h>52</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+NO_MORE_MESSAGE</panel_attributes>
+    <additional_attributes>250.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>767</x>
+      <y>494</y>
+      <w>260</w>
+      <h>65</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+累加消息重试次数retry</panel_attributes>
+    <additional_attributes>10.0;10.0;40.0;10.0;40.0;30.0;10.0;30.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLFrame</id>
+    <coordinates>
+      <x>624</x>
+      <y>546</y>
+      <w>585</w>
+      <h>195</h>
+    </coordinates>
+    <panel_attributes>判断是否达到最大重试次数max_retry
+bg=#bbaaaa
+fg=blue
+--
+if retry &gt;= max_retry
+-.
+
+
+
+
+else
+-.</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>767</x>
+      <y>611</y>
+      <w>377</w>
+      <h>52</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+insert msgidx_err
+fg=red</panel_attributes>
+    <additional_attributes>270.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>767</x>
+      <y>637</y>
+      <w>377</w>
+      <h>52</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+return
+fg=red</panel_attributes>
+    <additional_attributes>270.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>702</x>
+      <y>429</y>
+      <w>104</w>
+      <h>286</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+</panel_attributes>
+    <additional_attributes>60.0;10.0;10.0;10.0;10.0;200.0;60.0;200.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>65</x>
+      <y>338</y>
+      <w>117</w>
+      <h>858</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+</panel_attributes>
+    <additional_attributes>70.0;10.0;10.0;10.0;10.0;640.0;70.0;640.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1131</x>
+      <y>806</y>
+      <w>273</w>
+      <h>182</h>
+    </coordinates>
+    <panel_attributes>假设锁定时间设定为10分钟, 最大
+消费重试次数为5, 则此情况的
+消息, 一条需要50分钟才能被抛弃
+
+长时间占用最大在途消息数, 进而
+导致后续的正常消息得不到
+机会执行
+bg=#ff0000</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>1612</x>
+      <y>299</y>
+      <w>130</w>
+      <h>39</h>
+    </coordinates>
+    <panel_attributes>_消费者客户端_
+bg=orange</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>1924</x>
+      <y>299</y>
+      <w>130</w>
+      <h>39</h>
+    </coordinates>
+    <panel_attributes>_Broker_
+bg=orange</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>2236</x>
+      <y>299</y>
+      <w>130</w>
+      <h>39</h>
+    </coordinates>
+    <panel_attributes>_BLE_
+bg=orange</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1976</x>
+      <y>325</y>
+      <w>39</w>
+      <h>962</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;720.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2288</x>
+      <y>325</y>
+      <w>39</w>
+      <h>962</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;720.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1664</x>
+      <y>338</y>
+      <w>351</w>
+      <h>52</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+发送一个获取消息的请求</panel_attributes>
+    <additional_attributes>250.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1976</x>
+      <y>715</y>
+      <w>351</w>
+      <h>52</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+返回MessageID</panel_attributes>
+    <additional_attributes>10.0;20.0;250.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1664</x>
+      <y>832</y>
+      <w>260</w>
+      <h>65</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+可选:有压缩标记 解压</panel_attributes>
+    <additional_attributes>10.0;10.0;50.0;10.0;50.0;30.0;10.0;30.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1664</x>
+      <y>975</y>
+      <w>351</w>
+      <h>52</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+消费确认</panel_attributes>
+    <additional_attributes>250.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1976</x>
+      <y>754</y>
+      <w>312</w>
+      <h>65</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+从消息体表中取出消息内容</panel_attributes>
+    <additional_attributes>10.0;10.0;50.0;10.0;50.0;30.0;10.0;30.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1976</x>
+      <y>1014</y>
+      <w>156</w>
+      <h>65</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+消息稽核</panel_attributes>
+    <additional_attributes>10.0;10.0;50.0;10.0;50.0;30.0;10.0;30.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>1664</x>
+      <y>351</y>
+      <w>26</w>
+      <h>52</h>
+    </coordinates>
+    <panel_attributes>
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>1664</x>
+      <y>819</y>
+      <w>26</w>
+      <h>208</h>
+    </coordinates>
+    <panel_attributes>
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1664</x>
+      <y>793</y>
+      <w>351</w>
+      <h>52</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+返回消息内容</panel_attributes>
+    <additional_attributes>10.0;20.0;250.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1664</x>
+      <y>1157</y>
+      <w>351</w>
+      <h>52</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+确认失败
+fg=red</panel_attributes>
+    <additional_attributes>10.0;20.0;250.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>1664</x>
+      <y>1183</y>
+      <w>26</w>
+      <h>39</h>
+    </coordinates>
+    <panel_attributes>
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1664</x>
+      <y>325</y>
+      <w>39</w>
+      <h>949</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;710.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1664</x>
+      <y>884</y>
+      <w>195</w>
+      <h>65</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+本地业务处理</panel_attributes>
+    <additional_attributes>10.0;10.0;50.0;10.0;50.0;30.0;10.0;30.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1664</x>
+      <y>936</y>
+      <w>338</w>
+      <h>65</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+可选: 根据重发标记,做剃重处理</panel_attributes>
+    <additional_attributes>10.0;10.0;50.0;10.0;50.0;30.0;10.0;30.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1976</x>
+      <y>1053</y>
+      <w>351</w>
+      <h>65</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+消费确认
+(ClientID+TopicID+MessageID)</panel_attributes>
+    <additional_attributes>250.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2288</x>
+      <y>1105</y>
+      <w>377</w>
+      <h>52</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+record not found
+fg=red</panel_attributes>
+    <additional_attributes>10.0;20.0;270.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>2574</x>
+      <y>299</y>
+      <w>130</w>
+      <h>39</h>
+    </coordinates>
+    <panel_attributes>_Store_
+bg=orange</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2626</x>
+      <y>325</y>
+      <w>39</w>
+      <h>949</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;710.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1976</x>
+      <y>780</y>
+      <w>689</w>
+      <h>52</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-&gt;
+select from MesageStore_?</panel_attributes>
+    <additional_attributes>510.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2288</x>
+      <y>1079</y>
+      <w>377</w>
+      <h>52</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+update msgidx_part_?</panel_attributes>
+    <additional_attributes>270.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1976</x>
+      <y>403</y>
+      <w>351</w>
+      <h>65</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+消费请求
+(topic client locktime)</panel_attributes>
+    <additional_attributes>250.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2288</x>
+      <y>442</y>
+      <w>325</w>
+      <h>65</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+按序取ID (略过未到锁定时间的)</panel_attributes>
+    <additional_attributes>10.0;10.0;40.0;10.0;40.0;30.0;10.0;30.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1976</x>
+      <y>364</y>
+      <w>117</w>
+      <h>65</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+验证</panel_attributes>
+    <additional_attributes>10.0;10.0;40.0;10.0;40.0;30.0;10.0;30.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2288</x>
+      <y>494</y>
+      <w>260</w>
+      <h>65</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+累加消息重试次数retry</panel_attributes>
+    <additional_attributes>10.0;10.0;40.0;10.0;40.0;30.0;10.0;30.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLFrame</id>
+    <coordinates>
+      <x>2145</x>
+      <y>546</y>
+      <w>585</w>
+      <h>208</h>
+    </coordinates>
+    <panel_attributes>判断是否达到最大重试次数max_retry
+bg=#bbaaaa
+fg=blue
+--
+if retry &gt;= max_retry
+-.
+
+
+
+
+else
+-.</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2288</x>
+      <y>611</y>
+      <w>377</w>
+      <h>52</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+insert msgidx_err
+fg=red</panel_attributes>
+    <additional_attributes>270.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2288</x>
+      <y>637</y>
+      <w>377</w>
+      <h>52</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+return
+fg=red</panel_attributes>
+    <additional_attributes>270.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2223</x>
+      <y>429</y>
+      <w>104</w>
+      <h>286</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+</panel_attributes>
+    <additional_attributes>60.0;10.0;10.0;10.0;10.0;200.0;60.0;200.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1976</x>
+      <y>1131</y>
+      <w>351</w>
+      <h>52</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+return error
+fg=red</panel_attributes>
+    <additional_attributes>10.0;20.0;250.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1586</x>
+      <y>338</y>
+      <w>117</w>
+      <h>923</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+</panel_attributes>
+    <additional_attributes>70.0;10.0;10.0;10.0;10.0;690.0;70.0;690.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLUseCase</id>
+    <coordinates>
+      <x>2262</x>
+      <y>1144</y>
+      <w>156</w>
+      <h>52</h>
+    </coordinates>
+    <panel_attributes>lt=.
+
+内存中消息依然
+锁定状态
+bg=green
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLUseCase</id>
+    <coordinates>
+      <x>2301</x>
+      <y>715</y>
+      <w>156</w>
+      <h>52</h>
+    </coordinates>
+    <panel_attributes>lt=.
+
+可能返回已经
+消费过ID
+bg=green
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2470</x>
+      <y>845</y>
+      <w>273</w>
+      <h>182</h>
+    </coordinates>
+    <panel_attributes>假设locktime=10分钟, 
+max_retry=5
+
+==&gt;
+
+50分钟后进err表
+消费者收到5次
+bg=#ff0000</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

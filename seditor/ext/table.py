@@ -13,33 +13,25 @@ from PyQt5.QtCore import Qt
 class Table(QtWidgets.QDialog):
     def __init__(self,parent = None):
         QtWidgets.QDialog.__init__(self, parent)
-
         self.parent = parent
-         
         self.initUI()
  
     def initUI(self):
-
         # Rows
         rowsLabel = QtWidgets.QLabel("Rows: ",self)
-        
         self.rows = QtWidgets.QSpinBox(self)
 
         # Columns
         colsLabel = QtWidgets.QLabel("Columns",self)
-        
         self.cols = QtWidgets.QSpinBox(self)
 
         # Cell spacing (distance between cells)
         spaceLabel = QtWidgets.QLabel("Cell spacing",self)
-        
         self.space = QtWidgets.QSpinBox(self)
 
         # Cell padding (distance between cell and inner text)
         padLabel = QtWidgets.QLabel("Cell padding",self)
-
         self.pad = QtWidgets.QSpinBox(self)
-        
         self.pad.setValue(10)
 
         # Button
@@ -68,37 +60,27 @@ class Table(QtWidgets.QDialog):
         self.setLayout(layout)
 
     def insert(self):
-
         cursor = self.parent.text.textCursor()
 
         # Get the configurations
         rows = self.rows.value()
-
         cols = self.cols.value()
-
         if not rows or not cols:
-
             popup = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Warning,
                                       "Parameter error",
                                       "Row and column numbers may not be zero!",
                                       QtWidgets.QMessageBox.Ok,
                                       self)
             popup.show()
-
         else:
-
             padding = self.pad.value()
-
             space = self.space.value()
 
             # Set the padding and spacing
             fmt = QtGui.QTextTableFormat()
-            
             fmt.setCellPadding(padding)
-
             fmt.setCellSpacing(space)
 
             # Inser the new table
             cursor.insertTable(rows,cols,fmt)
-
             self.close()

@@ -157,9 +157,12 @@ class Main(QtWidgets.QMainWindow,
         self.__openNote(data.fpath)
 
     def __openNote(self, fpath):
-        with open(fpath, "rt") as file:
-            self.text.setText(file.read())
-            self.changesSaved = True
+        try:
+            with open(fpath, "rt") as file:
+                self.text.setText(file.read())
+                self.changesSaved = True
+        except:
+            return
         self.filename = fpath
         self._title()
         self.fs.setConf("last_open", self.filename)
