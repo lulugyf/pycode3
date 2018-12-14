@@ -59,7 +59,7 @@ class Main(QtWidgets.QMainWindow,
         tree = QtWidgets.QTreeView(self)
 
         # tree.setHeaderHidden(True)
-        tree.doubleClicked.connect(self.itemOpen)
+        tree.doubleClicked.connect(self.noteOpen)
         tree.setContextMenuPolicy(Qt.CustomContextMenu)
         tree.customContextMenuRequested.connect(self.contextTree)
         tree.setRootIsDecorated(True)
@@ -80,7 +80,7 @@ class Main(QtWidgets.QMainWindow,
 
         # We need our own context menu for tables
         text.setContextMenuPolicy(Qt.CustomContextMenu)
-        text.customContextMenuRequested.connect(self.context)
+        text.customContextMenuRequested.connect(self.contextNote)
         text.textChanged.connect(self.changed)
 
         # w, h = 1030, 800
@@ -89,7 +89,7 @@ class Main(QtWidgets.QMainWindow,
         tree_percent = 0.2
         splitter1.setSizes([int(w*tree_percent), int(w*(1-tree_percent))])
         # self.setWindowTitle("sedit Note Writer")
-        self.setWindowIcon(QtGui.QIcon("icons/icon.png"))
+        self.setWindowIcon(QtGui.QIcon("icons/th.jpg"))
 
         self._openWorkDir()
         self._title()
@@ -107,9 +107,6 @@ class Main(QtWidgets.QMainWindow,
         tree.setModel(model)
         for i in range(2, model.columnCount()):
             tree.setColumnHidden(i, True)
-        # w = tree.geometry().width()
-        # print("--w", w)
-        # tree.setColumnWidth(0, int(w*0.8))
 
         root = model.rootItem
         for row in range(root.childCount()):
@@ -117,6 +114,13 @@ class Main(QtWidgets.QMainWindow,
             tree.expand(idx)
         fs.FS.addRecentDir(wd)
 
+        last_open = self.fs.getConf("last_open")
+        if last_open != "":
+            self.__openNote(last_open)
+        win_geo = self.fs.getConf("window_geometry")
+        if win_geo != "":
+            v = [int(i) for i in win_geo.split(",")]
+            self.win_geo = QtCore.QRect(v[0], v[1], v[2], v[3])
 
     def _title(self, changeSave=True):
         editFile = self.fs.path(self.filename)
@@ -130,36 +134,20 @@ class Main(QtWidgets.QMainWindow,
             self._title(False)
         self.changesSaved = False
 
-    def closeEvent(self,event):
-        if self.changesSaved:
-            event.accept()
-        else:
-            popup = QtWidgets.QMessageBox(self)
-            popup.setIcon(QtWidgets.QMessageBox.Warning)
-            popup.setText("The document has been modified")
-            popup.setInformativeText("Do you want to save your changes?")
-            popup.setStandardButtons(QtWidgets.QMessageBox.Save   |
-                                      QtWidgets.QMessageBox.Cancel |
-                                      QtWidgets.QMessageBox.Discard)
-            
-            popup.setDefaultButton(QtWidgets.QMessageBox.Save)
-            answer = popup.exec_()
-            if answer == QtWidgets.QMessageBox.Save:
-                self.save()
-            elif answer == QtWidgets.QMessageBox.Discard:
-                event.accept()
-            else:
-                event.ignore()
+    def _beforeClose(self):
+        '''do something before close'''
+        # save the window geometry
+        g = self.geometry()
+        self.fs.setConf("window_geometry", "%d,%d,%d,%d" % (g.x(), g.y(), g.width(), g.height()))
+        self.fs.saveConf()
 
-    def context(self, pos):
+    def contextNote(self, pos):
+        '''show context menu of note'''
         # Grab the cursor
         cursor = self.text.textCursor()
         # Grab the current table, if there is one
         table = cursor.currentTable()
 
-        # Above will return 0 if there is no current table, in which case
-        # we call the normal context menu. If there is a table, we create
-        # our own context menu specific to table interaction
         if table:
             try:
                 ui.showTableContextMenu(table, pos, cursor, self)
@@ -168,35 +156,8 @@ class Main(QtWidgets.QMainWindow,
         else:
             event = QtGui.QContextMenuEvent(QtGui.QContextMenuEvent.Mouse,QtCore.QPoint())
             self.text.contextMenuEvent(event)
-    def contextTree(self, pos):
-        '''tree context menu request'''
-        tree = self.tree
-        index = tree.indexAt(pos)
-        # index = self.tree.selectionModel().currentIndex()
-        if not index.isValid():
-            return
-        model = self.tree.model()
-        data = model.getItem(index).itemData
 
-        menu = QtWidgets.QMenu(self)
-        if data.type == fs.ItemType.FILE:
-            delNoteAction = QtWidgets.QAction("Delete Note", self)
-            delNoteAction.triggered.connect(lambda: self.delNote(model, index, data))
-            menu.addAction(delNoteAction)
-        elif data.type == fs.ItemType.DIR:
-            addNoteAction = QtWidgets.QAction("Add Note", self)
-            addNoteAction.triggered.connect(lambda: self.addNote(model, index, data.fpath))
-            menu.addAction(addNoteAction)
-            addFolderAction = QtWidgets.QAction("Add Folder", self)
-            addFolderAction.triggered.connect(lambda: self.addFolder(model, index, data))
-            menu.addAction(addFolderAction)
-            delFolderAction = QtWidgets.QAction("Delete Folder", self)
-            delFolderAction.triggered.connect(lambda: self.delFolder(model, index, data))
-            menu.addAction(delFolderAction)
-        menu.move(self.tree.mapToGlobal(pos))
-        menu.show()
-
-    def itemOpen(self, index):
+    def noteOpen(self, index):
         data = self.tree.model().getItem(index).itemData
         if data.type == fs.ItemType.DIR:
             return
@@ -204,22 +165,26 @@ class Main(QtWidgets.QMainWindow,
             return
         if not self.changesSaved:
             self.save()
-        # print("--double click on ", repr(data))
+        self.__openNote(data.fpath)
 
-        self.filename = data.fpath
-        with open(self.filename, "rt") as file:
+    def __openNote(self, fpath):
+        with open(fpath, "rt") as file:
             self.text.setText(file.read())
             self.changesSaved = True
+        self.filename = fpath
         self._title()
+        self.fs.setConf("last_open", self.filename)
 
 
 def main():
     app = QtWidgets.QApplication(sys.argv)
     main = Main()
 
-    availableSize = QtWidgets.QApplication.desktop().availableGeometry(main).size()
-    main.resize(availableSize * 3 / 4)
-    # main.setColumnWidth(0, tree.width() / 3)
+    if hasattr(main, 'win_geo'):
+        main.setGeometry(main.win_geo) # restore window pos
+    else:
+        availableSize = QtWidgets.QApplication.desktop().availableGeometry(main).size()
+        main.resize(availableSize * 3 / 4)
     main.show()
 
     sys.exit(app.exec_())

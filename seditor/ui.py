@@ -296,6 +296,30 @@ class UISetup:
             rAction.triggered.connect(lambda _,path=r: self._openWorkDir( path ) ) # thrick is here
             file.addAction(rAction)
 
+    def closeEvent(self, event):
+        if self.changesSaved:
+            self._beforeClose()
+            event.accept()
+        else:
+            popup = QtWidgets.QMessageBox(self)
+            popup.setIcon(QtWidgets.QMessageBox.Warning)
+            popup.setText("The document has been modified")
+            popup.setInformativeText("Do you want to save your changes?")
+            popup.setStandardButtons(QtWidgets.QMessageBox.Save |
+                                     QtWidgets.QMessageBox.Cancel |
+                                     QtWidgets.QMessageBox.Discard)
+
+            popup.setDefaultButton(QtWidgets.QMessageBox.Save)
+            answer = popup.exec_()
+            if answer == QtWidgets.QMessageBox.Save:
+                self.save()
+                self._beforeClose()
+            elif answer == QtWidgets.QMessageBox.Discard:
+                self._beforeClose()
+                event.accept()
+            else:
+                event.ignore()
+
 def showTableContextMenu(table, pos, cursor, self):
     menu = QtWidgets.QMenu(self)
 

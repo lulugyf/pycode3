@@ -130,6 +130,34 @@ class TreeActions(object):
         os.rmdir(data.fpath)
         model.removeRow(index.row(), index.parent())
 
+    def contextTree(self, pos):
+        '''tree context menu request'''
+        tree = self.tree
+        index = tree.indexAt(pos)
+        # index = self.tree.selectionModel().currentIndex()
+        if not index.isValid():
+            return
+        model = self.tree.model()
+        data = model.getItem(index).itemData
+
+        menu = QtWidgets.QMenu(self)
+        if data.type == fs.ItemType.FILE:
+            delNoteAction = QtWidgets.QAction("Delete Note", self)
+            delNoteAction.triggered.connect(lambda: self.delNote(model, index, data))
+            menu.addAction(delNoteAction)
+        elif data.type == fs.ItemType.DIR:
+            addNoteAction = QtWidgets.QAction("Add Note", self)
+            addNoteAction.triggered.connect(lambda: self.addNote(model, index, data.fpath))
+            menu.addAction(addNoteAction)
+            addFolderAction = QtWidgets.QAction("Add Folder", self)
+            addFolderAction.triggered.connect(lambda: self.addFolder(model, index, data))
+            menu.addAction(addFolderAction)
+            delFolderAction = QtWidgets.QAction("Delete Folder", self)
+            delFolderAction.triggered.connect(lambda: self.delFolder(model, index, data))
+            menu.addAction(delFolderAction)
+        menu.move(self.tree.mapToGlobal(pos))
+        menu.show()
+
 class TableActions:
     '''表格变更的操作方法'''
     def removeRow(self):

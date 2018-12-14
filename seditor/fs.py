@@ -8,6 +8,7 @@ from enum import Enum
 import time
 import shutil
 import pathlib
+import json
 
 class ItemType(Enum):
     DIR = 1
@@ -27,10 +28,12 @@ class FSItem:
 class FS:
     def __init__(self, basedir):
         self.basedir = basedir
+        self.confPath = "%s%s.seditor.conf" % (basedir, os.path.sep)
 
     def loadDir(self):
         basedir = self.basedir
         os.chdir(basedir)
+        self.__loadConf()
         if not os.path.isdir(basedir):
             print("basedir must be a directory:", basedir)
             return None
@@ -50,6 +53,21 @@ class FS:
                     parent.appendChild(FSItem(n, mtime, fpath, ItemType.FILE))
         children(basedir, baseItem)
         return rootItem
+
+    def __loadConf(self):
+        if not os.path.exists(self.confPath):
+            self.conf = {}
+            return
+        with open(self.confPath, encoding="UTF-8") as f:
+            self.conf = json.load(f)
+
+    def saveConf(self):
+        with open(self.confPath, "w", encoding="UTF-8") as f:
+            json.dump(self.conf, f)
+    def getConf(self, key):
+        return self.conf.get(key, "")
+    def setConf(self, key, value):
+        self.conf[key] = value
 
     def imagePath(self, imageFile, noteFile):
         '''copy the image file into content folder
