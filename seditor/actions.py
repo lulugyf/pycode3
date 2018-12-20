@@ -437,25 +437,6 @@ class ToolActions:
         directory = directory.replace("/", "\\")
         self._openWorkDir(directory)
 
-    def save(self):
-        # Only open dialog if there is no filename yet
-        #PYQT5 Returns a tuple in PyQt5, we only need the filename
-        if not self.filename:
-          self.filename = QtWidgets.QFileDialog.getSaveFileName(self, 'Save File')[0]
-
-        if self.filename:
-            # Append extension if not there yet
-            if not self.filename.endswith(".writer"):
-              self.filename += ".writer"
-
-            # We just store the contents of the text file along with the
-            # format in html, which Qt does in a very nice way for us
-            with open(self.filename,"wt") as file:
-                file.write(self.text.toHtml())
-
-            self.changesSaved = True
-            self._title()
-
     def preview(self):
         # Open preview dialog
         preview = QtPrintSupport.QPrintPreviewDialog()
@@ -477,14 +458,14 @@ class ToolActions:
         line = cursor.blockNumber() + 1
         col = cursor.columnNumber()
         self.statusbar.showMessage("Line: {} | Column: {}".format(line,col))
-        self.fs.setConf("cursor_%s"%self.filename, "%d"%cursor.position()) #保存当前的光标位置, 重新打开时恢复位置
+        #self.fs.setConf("cursor_%s"%self.filename, "%d"%cursor.position()) #保存当前的光标位置, 重新打开时恢复位置
 
     def wordCount(self):
         wc = wordcount.WordCount(self)
         wc.getText()
         wc.show()
 
-    @MyPyQtSlot()
+    #@MyPyQtSlot()
     def insertImage(self, item):
         # Get image file name
         #PYQT5 Returns a tuple in PyQt5
@@ -509,7 +490,7 @@ class ToolActions:
                 cursor = self.text.textCursor()
                 cursor.insertImage(image, cpath)
 
-    @MyPyQtSlot()
+    # @MyPyQtSlot()
     def pasteImage(self, item):
         if self.filename == '':
             return
@@ -525,3 +506,75 @@ class ToolActions:
         image.save(fpath, "jpeg")
         cursor = self.text.textCursor()
         cursor.insertImage(image, cpath)
+
+    #@MyPyQtSlot()
+    def setPassword(self, e):
+        # q12201 设置或修改文档密码
+        from ext import de
+        if self.has_pass == True:
+            pp = de.inputPassword(self, "Original Password")
+            if pp != self.pswd:
+                QMessageBox.information(self, "Warning", "Invalid Password") #q12203
+                return
+        pswd = de.inputPassword(self, "New Password")
+        old_pswd = self.pswd
+        for root, dirs, files in os.walk(self.basedir, topdown=False):
+            for name in files:
+                if not name.endswith(".writer"):
+                    continue
+                fpath = os.path.join(root, name)
+                print("---processing", fpath)
+                if self.has_pass == False:
+                    with open(fpath, "rt") as file:
+                        content = file.read()
+                else:
+                    content = de.decryptFromFile(old_pswd, fpath)
+                de.encryptToFile(content, pswd, fpath)
+            # for name in dirs:
+            #     print(os.path.join(root, name))
+        self.pswd = pswd
+        self.has_pass = True
+        self.fs.setConf("has_pass", "True")
+        self.fs.saveConf()
+
+    #@MyPyQtSlot()
+    def delPassword(self, e):
+        # q12201 删除文档密码
+        from ext import de
+        if not self.has_pass:
+            QMessageBox.information(self, "Warning", "No Password to be removed!")
+            return
+        if self.has_pass == True:
+            pp = de.inputPassword(self, "Original Password")
+            if pp != self.pswd:
+                QMessageBox.information(self, "Warning", "Invalid Password") #q12203
+                return
+        old_pswd = self.pswd
+        for root, dirs, files in os.walk(self.basedir, topdown=False):
+            for name in files:
+                if not name.endswith(".writer"):
+                    continue
+                fpath = os.path.join(root, name)
+                print("---processing remove pswd", fpath)
+                content = de.decryptFromFile(old_pswd, fpath)
+                with open(fpath,"wt") as file:
+                    file.write(content)
+        self.pswd = ""
+        self.has_pass = False
+        self.fs.setConf("has_pass", "False")
+        self.fs.saveConf()
+
+    @MyPyQtSlot()
+    def gitstatus(self, e):
+        from ext import de
+        de.git_status(self.basedir, self)
+
+    @MyPyQtSlot()
+    def gitpull(self, e):
+        from ext import de
+        de.git_pull(self.basedir, self)
+
+    @MyPyQtSlot()
+    def gitpush(self, e):
+        from ext import de
+        de.git_push(self.basedir, "auto commit", self)

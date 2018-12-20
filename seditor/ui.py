@@ -234,7 +234,7 @@ class UISetup:
 
         file = menubar.addMenu("File")
         edit = menubar.addMenu("Edit")
-        tred = menubar.addMenu("Tree")
+        tred = menubar.addMenu("WorkSpace")
         view = menubar.addMenu("View")
 
         # Add the most important actions to the menubar
@@ -266,24 +266,43 @@ class UISetup:
         view.addAction(formatbarAction)
         view.addAction(statusbarAction)
 
-        insertRowAction = QtWidgets.QAction("Add Document", self)
-        insertRowAction.setShortcut("Ctrl+I, R")
-        insertRowAction.triggered.connect(self.insertTreeRow)
-        #print("----", type(self.insertTreeRow))
-        removeRowAction = QtWidgets.QAction("Remove Row", self)
-        removeRowAction.setShortcut("Ctrl+R, R")
-        removeRowAction.triggered.connect(self.removeTreeRow)
-        insertChildAction = QtWidgets.QAction("Insert Child", self)
-        insertChildAction.setShortcut( "Ctrl+N" )
-        insertChildAction.triggered.connect(self.insertTreeChild)
+        # insertRowAction = QtWidgets.QAction("Add Document", self)
+        # insertRowAction.setShortcut("Ctrl+I, R")
+        # insertRowAction.triggered.connect(self.insertTreeRow)
+        # tred.addAction(insertRowAction)
+        # #print("----", type(self.insertTreeRow))
+        # removeRowAction = QtWidgets.QAction("Remove Row", self)
+        # removeRowAction.setShortcut("Ctrl+R, R")
+        # removeRowAction.triggered.connect(self.removeTreeRow)
+        # tred.addAction(removeRowAction)
+        # insertChildAction = QtWidgets.QAction("Insert Child", self)
+        # insertChildAction.setShortcut( "Ctrl+N" )
+        # insertChildAction.triggered.connect(self.insertTreeChild)
+        # tred.addAction(insertChildAction)
+        # saveTreeAction = QtWidgets.QAction("Save Tree", self)
+        # saveTreeAction.triggered.connect(self.saveTree)
+        # tred.addAction(saveTreeAction)
 
-        saveTreeAction = QtWidgets.QAction("Save Tree", self)
-        saveTreeAction.triggered.connect(self.saveTree)
+        # 设置密码 菜单  q12201
+        setPassAction = QtWidgets.QAction("Set Password", self)
+        setPassAction.triggered.connect(self.setPassword)
+        tred.addAction(setPassAction)
 
-        tred.addAction(insertRowAction)
-        tred.addAction(removeRowAction)
-        tred.addAction(insertChildAction)
-        tred.addAction(saveTreeAction)
+        # 删除密码 菜单 q12201
+        delPassAction = QtWidgets.QAction("Remove Password", self)
+        delPassAction.triggered.connect(self.delPassword)
+        tred.addAction(delPassAction)
+
+        # q12202 git 文档同步
+        action = QtWidgets.QAction("git pull", self)
+        action.triggered.connect(self.gitpull)
+        tred.addAction(action)
+        action = QtWidgets.QAction("git push", self)
+        action.triggered.connect(self.gitpush)
+        tred.addAction(action)
+        action = QtWidgets.QAction("git status", self)
+        action.triggered.connect(self.gitstatus)
+        tred.addAction(action)
 
         self.filemenu = file
 

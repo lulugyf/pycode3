@@ -16,6 +16,7 @@ sys.path.insert(0, codepath)
 import ui
 import actions
 import fs
+from ext import de
 from treemodel import TreeModel
 
 class Main(QtWidgets.QMainWindow,
@@ -81,38 +82,10 @@ class Main(QtWidgets.QMainWindow,
         self.setWindowIcon(QtGui.QIcon("icons/th.jpg"))
 
         self._openWorkDir()
-        self._title()
-
-    def _openWorkDir(self, wd=None):
-        if wd is None:
-            wd = fs.FS.getRecentDirs()[-1]
-        if wd == self.basedir:
-            return
-        print("--openWorkDir:"+wd)
-        tree = self.tree
-        self.basedir = wd #
-        self.fs = fs.FS(self.basedir)
-        model = TreeModel(None, self.fs.loadDir())
-        tree.setModel(model)
-        for i in range(2, model.columnCount()):
-            tree.setColumnHidden(i, True)
-
-        root = model.rootItem
-        for row in range(root.childCount()):
-            idx = model.index(row, 0)
-            tree.expand(idx)
-        fs.FS.addRecentDir(wd)
-
-        last_open = self.fs.getConf("last_open")
-        if last_open != "":
-            self.__openNote(last_open)
-        win_geo = self.fs.getConf("window_geometry")
-        if win_geo != "":
-            v = [int(i) for i in win_geo.split(",")]
-            self.win_geo = QtCore.QRect(v[0], v[1], v[2], v[3])
+        #self._title()
 
     def _title(self, changeSave=True):
-        editFile = self.fs.path(self.filename)
+        editFile = self.fs.rpath(self.filename)
         t = ""
         if not changeSave:
             t = "*"
@@ -158,21 +131,82 @@ class Main(QtWidgets.QMainWindow,
 
     def __openNote(self, fpath):
         try:
-            with open(fpath, "rt") as file:
-                self.text.setText(file.read())
-                self.changesSaved = True
+            # print("__openNote, pswd", repr(self.pswd), fpath)
+            if self.has_pass == False:
+                with open(fpath, "rt") as file:
+                    text = file.read()
+            else: # q12201
+                text = de.decryptFromFile(self.pswd, fpath)
         except:
             return
         self.filename = fpath
+        self.fs.setConf("last_open", self.fs.rpath(self.filename))
+        self.text.setText(text)
+        self.changesSaved = True
         self._title()
-        self.fs.setConf("last_open", self.filename)
 
         # 恢复光标位置
-        curpos = self.fs.getConf("cursor_%s"%self.filename)
-        if curpos != '':
-            cursor = self.text.textCursor()
-            cursor.setPosition(int(curpos))
-            self.text.setTextCursor(cursor)
+        # curpos = self.fs.getConf("cursor_%s"%self.filename)
+        # if curpos != '':
+        #     cursor = self.text.textCursor()
+        #     cursor.setPosition(int(curpos))
+        #     self.text.setTextCursor(cursor)
+
+    def _openWorkDir(self, wd=None):
+        if wd is None:
+            wd = fs.FS.getRecentDirs()[-1]
+        if wd == self.basedir:
+            return
+        print("--openWorkDir:"+wd)
+        tree = self.tree
+        self.basedir = wd #
+        self.fs = fs.FS(self.basedir)
+        model = TreeModel(None, self.fs.loadDir())
+        tree.setModel(model)
+        for i in range(2, model.columnCount()):
+            tree.setColumnHidden(i, True)
+
+        root = model.rootItem
+        for row in range(root.childCount()):
+            idx = model.index(row, 0)
+            tree.expand(idx)
+        fs.FS.addRecentDir(wd)
+
+        has_pass = self.fs.getConf("has_pass")
+        if has_pass == "True":
+            self.pswd = de.inputPassword(self)
+            self.has_pass = True
+        else:
+            self.pswd = ""
+            self.has_pass = False
+
+        last_open = self.fs.getConf("last_open")
+        if last_open != "":
+            self.__openNote(self.fs.apath(last_open))
+        win_geo = self.fs.getConf("window_geometry")
+        if win_geo != "":
+            v = [int(i) for i in win_geo.split(",")]
+            self.win_geo = QtCore.QRect(v[0], v[1], v[2], v[3])
+
+    def save(self):
+        # Only open dialog if there is no filename yet
+        #PYQT5 Returns a tuple in PyQt5, we only need the filename
+        if not self.filename:
+          self.filename = QtWidgets.QFileDialog.getSaveFileName(self, 'Save File')[0]
+
+        if self.filename:
+            # Append extension if not there yet
+            if not self.filename.endswith(".writer"):
+              self.filename += ".writer"
+
+            if self.has_pass == False:
+                with open(self.filename,"wt") as file:
+                    file.write(self.text.toHtml())
+            else: # q12201
+                de.encryptToFile(self.text.toHtml(), self.pswd, self.filename)
+
+            self.changesSaved = True
+            self._title()
 
 def main():
     app = QtWidgets.QApplication(sys.argv)

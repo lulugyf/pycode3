@@ -99,15 +99,18 @@ class FS:
             cpath = cpath[1:]
         return fpath, cpath
 
-    def path(self, fpath):
+    def rpath(self, fpath):
         '''返回文件的相对路径'''
         if not fpath.startswith(self.basedir):
-            print("invalid path--!", fpath, self.basedir)
+            print("invalid path--! paht=[%s] base[%s]"%( fpath, self.basedir) )
             return '-'
         cpath = fpath[len(self.basedir):]
         if cpath[0] == os.path.sep:
             cpath = cpath[1:]
         return cpath
+    def apath(self, fpath):
+        '''返回文件的绝对路径'''
+        return self.basedir + os.path.sep + fpath
 
     @staticmethod
     def getRecentDirs():
