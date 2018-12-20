@@ -25,6 +25,10 @@ def git_pull(wdir, parent=None):
     warn(msg, "Pull output", parent)
 
 def git_push(wdir, comment="[comment]", parent=None):
+    comment, ok = QtWidgets.QInputDialog.getText(parent, "Comment",
+            "Comment:", QtWidgets.QLineEdit.Normal, "")
+    if not ok:
+        return ""
     msg = __exec(["git", "add", "."], wdir)
     msg2 = __exec(["git", "commit", "-m", comment], wdir)
     msg3 = __exec(["git", "push"], wdir)
