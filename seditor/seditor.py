@@ -133,9 +133,13 @@ class Main(QtWidgets.QMainWindow,
         try:
             # print("__openNote, pswd", repr(self.pswd), fpath)
             if self.has_pass == False:
-                with open(fpath, "rt") as file:
-                    text = file.read()
-            else: # q12201
+                try:
+                    with open(fpath, "r", encoding='utf8') as file:
+                        text = file.read()
+                except:
+                    with open(fpath, "rt") as file:
+                        text = file.read()
+            else:  # q12201
                 text = de.decryptFromFile(self.pswd, fpath)
         except:
             return
@@ -144,7 +148,6 @@ class Main(QtWidgets.QMainWindow,
         self.text.setText(text)
         self.changesSaved = True
         self._title()
-
         # 恢复光标位置
         # curpos = self.fs.getConf("cursor_%s"%self.filename)
         # if curpos != '':
@@ -209,25 +212,6 @@ class Main(QtWidgets.QMainWindow,
                     break
 
 
-    def save(self):
-        # Only open dialog if there is no filename yet
-        #PYQT5 Returns a tuple in PyQt5, we only need the filename
-        if not self.filename:
-          self.filename = QtWidgets.QFileDialog.getSaveFileName(self, 'Save File')[0]
-
-        if self.filename:
-            # Append extension if not there yet
-            if not self.filename.endswith(".writer"):
-              self.filename += ".writer"
-
-            if self.has_pass == False:
-                with open(self.filename,"wt") as file:
-                    file.write(self.text.toHtml())
-            else: # q12201
-                de.encryptToFile(self.text.toHtml(), self.pswd, self.filename)
-
-            self.changesSaved = True
-            self._title()
 
 def main():
     app = QtWidgets.QApplication(sys.argv)

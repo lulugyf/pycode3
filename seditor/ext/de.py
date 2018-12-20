@@ -46,7 +46,7 @@ def inputPassword(parent, prompt="password"):
 def encryptToFile(content, key, filename):
     chunksize = 64 * 1024
     outputFile = filename
-    content_b = content.encode("GBK")
+    content_b = content.encode("utf8")
     filesize = len(content_b)
     IV = Random.new().read(16)
 
@@ -86,7 +86,7 @@ def decryptFromFile(key, filename):
             output.append(plain)
     # print("---out.len", len(output), filesize)
     content_b = b"".join(output)
-    text = content_b[:filesize].decode("GBK")
+    text = content_b[:filesize].decode("utf8")
     # print("---text", text)
     return text
 

@@ -578,3 +578,32 @@ class ToolActions:
     def gitpush(self, e):
         from ext import de
         de.git_push(self.basedir, "auto commit", self)
+
+    @MyPyQtSlot()
+    def save(self, e=None):
+        # Only open dialog if there is no filename yet
+        #PYQT5 Returns a tuple in PyQt5, we only need the filename
+        if not self.filename:
+          self.filename = QtWidgets.QFileDialog.getSaveFileName(self, 'Save File')[0]
+
+        if self.filename:
+            # Append extension if not there yet
+            if not self.filename.endswith(".writer"):
+              self.filename += ".writer"
+
+            tmp_file = self.filename +".tmp"
+            if self.has_pass == False:
+                with open(tmp_file,"wb") as file:
+                    text = self.text.toHtml()
+                    text = text.encode('utf8')
+                    file.write(text)
+            else: # q12201
+                de.encryptToFile(self.text.toHtml(), self.pswd, tmp_file)
+            try:
+                os.remove(self.filename+".bak")
+            except: pass
+            os.rename(self.filename, self.filename+".bak")
+            os.rename(tmp_file, self.filename)
+            self.changesSaved = True
+            self._title()
+
