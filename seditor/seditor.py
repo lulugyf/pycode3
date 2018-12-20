@@ -166,10 +166,6 @@ class Main(QtWidgets.QMainWindow,
         for i in range(2, model.columnCount()):
             tree.setColumnHidden(i, True)
 
-        root = model.rootItem
-        for row in range(root.childCount()):
-            idx = model.index(row, 0)
-            tree.expand(idx)
         fs.FS.addRecentDir(wd)
 
         has_pass = self.fs.getConf("has_pass")
@@ -187,6 +183,31 @@ class Main(QtWidgets.QMainWindow,
         if win_geo != "":
             v = [int(i) for i in win_geo.split(",")]
             self.win_geo = QtCore.QRect(v[0], v[1], v[2], v[3])
+
+        idx_root = model.index(0, 0)
+        tree.expand(idx_root)
+        self._expand_opened_tree(last_open, tree)
+
+    def _expand_opened_tree(self, last_open, tree):
+        # find opened note, expand the tree
+        model = tree.model()
+        item = model.rootItem.child(0)
+        idx_root = model.index(0, 0)
+        idx = model.index(0, 0, idx_root)
+        print("    --", idx.row(), idx.parent().row(), idx_root.row(), idx_root.parent().row())
+        pi = last_open.split(os.path.sep)[:-1]
+        for path_seg in pi:
+            path_seg = path_seg + "/"
+            #print("---path_seg", path_seg)
+            for i in range(item.childCount()):
+                c = item.child(i)
+                if c.itemData.name == path_seg:
+                    idx = model.index(i, 0, parent=idx)
+                    tree.expand(idx)
+                    item = c
+                    print("    --", i, c.itemData.name, idx.row(), idx.column())
+                    break
+
 
     def save(self):
         # Only open dialog if there is no filename yet

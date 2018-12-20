@@ -99,6 +99,11 @@ class TreeModel(QAbstractItemModel):
     def columnCount(self, parent=QModelIndex()):
         return self.rootItem.columnCount()
 
+    def flags(self, index):
+        if not index.isValid():
+            return 0
+        return super(TreeModel, self).flags(index) # Qt.ItemIsEditable | super(TreeModel, self).flags(index)
+
     def data(self, index, role):
         if not index.isValid():
             return None
@@ -110,23 +115,12 @@ class TreeModel(QAbstractItemModel):
         item = self.getItem(index)
         return item.data(index.column())
 
-    def flags(self, index):
-        if not index.isValid():
-            return 0
-        return super(TreeModel, self).flags(index) # Qt.ItemIsEditable | super(TreeModel, self).flags(index)
-
     def getItem(self, index):
         if index.isValid():
             item = index.internalPointer()
             if item:
                 return item
         return self.rootItem
-
-    def headerData(self, section, orientation, role=Qt.DisplayRole):
-        if orientation == Qt.Horizontal and role == Qt.DisplayRole:
-            return self.rootItem.data(section)
-        return None
-
     def index(self, row, column, parent=QModelIndex()):
         if parent.isValid() and parent.column() != 0:
             return QModelIndex()
@@ -136,6 +130,20 @@ class TreeModel(QAbstractItemModel):
             return self.createIndex(row, column, childItem)
         else:
             return QModelIndex()
+
+    def parent(self, index):
+        if not index.isValid():
+            return QModelIndex()
+        childItem = self.getItem(index)
+        parentItem = childItem.parent()
+        if parentItem == self.rootItem:
+            return QModelIndex()
+        return self.createIndex(parentItem.childNumber(), 0, parentItem)
+
+    def headerData(self, section, orientation, role=Qt.DisplayRole):
+        if orientation == Qt.Horizontal and role == Qt.DisplayRole:
+            return self.rootItem.data(section)
+        return None
 
     def insertColumns(self, position, columns, parent=QModelIndex()):
         self.beginInsertColumns(parent, position, position + columns - 1)
@@ -160,15 +168,6 @@ class TreeModel(QAbstractItemModel):
         if not success:
             return -1
         return position
-
-    def parent(self, index):
-        if not index.isValid():
-            return QModelIndex()
-        childItem = self.getItem(index)
-        parentItem = childItem.parent()
-        if parentItem == self.rootItem:
-            return QModelIndex()
-        return self.createIndex(parentItem.childNumber(), 0, parentItem)
 
     def removeColumns(self, position, columns, parent=QModelIndex()):
         self.beginRemoveColumns(parent, position, position + columns - 1)
