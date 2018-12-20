@@ -82,7 +82,7 @@ def decryptFromFile(key, filename):
             if len(chunk) == 0:
                 break
             plain = decryptor.decrypt(chunk)
-            print("---plain", plain)
+            # print("---plain", plain)
             output.append(plain)
     # print("---out.len", len(output), filesize)
     content_b = b"".join(output)

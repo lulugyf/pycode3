@@ -1,14 +1,10 @@
 import sys
 
-#PYQT5 PyQt4’s QtGui module has been split into PyQt5’s QtGui, QtPrintSupport and QtWidgets modules
-
 from PyQt5 import QtWidgets
-#PYQT5 QSpinBox, QMessageBox, QDialog, QPushButton, QGridLayout, QLabel
 
 
 
-from PyQt5 import QtGui, QtCore
-from PyQt5.QtCore import Qt
+from PyQt5 import QtGui
 
 class Table(QtWidgets.QDialog):
     def __init__(self,parent = None):

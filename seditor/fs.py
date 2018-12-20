@@ -143,6 +143,36 @@ class FS:
         with open(recentFile, "w", encoding="UTF-8") as f:
             f.write("\n".join(recents) )
 
+def saveTextFile(content, fpath, has_pass=False, pswd=None):
+    from ext import de
+    tmp_file = fpath + ".tmp"
+    if has_pass == False:
+        with open(tmp_file, "w", encoding="utf8") as file:
+            file.write(content)
+    else:  # q12201
+        de.encryptToFile(content, pswd, tmp_file)
+    try:
+        os.remove(fpath + ".bak")
+    except:
+        pass
+    os.rename(fpath, fpath + ".bak")
+    os.rename(tmp_file, fpath)
+
+def readTextFile(fpath, has_pass=False, pswd=None):
+    from ext import de
+    try:
+        if has_pass == False:
+            try:
+                with open(fpath, "r", encoding='utf8') as file:
+                    text = file.read()
+            except:
+                with open(fpath, "rt") as file:
+                    text = file.read()
+        else:  # q12201
+            text = de.decryptFromFile(pswd, fpath)
+    except:
+        return None
+    return text
 
 if __name__ == '__main__':
     fpath = r"d:\tmp\notes"

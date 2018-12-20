@@ -507,7 +507,7 @@ class ToolActions:
         cursor = self.text.textCursor()
         cursor.insertImage(image, cpath)
 
-    #@MyPyQtSlot()
+    @MyPyQtSlot()
     def setPassword(self, e):
         # q12201 设置或修改文档密码
         from ext import de
@@ -516,28 +516,21 @@ class ToolActions:
             if pp != self.pswd:
                 QMessageBox.information(self, "Warning", "Invalid Password") #q12203
                 return
-        pswd = de.inputPassword(self, "New Password")
-        old_pswd = self.pswd
+        new_pswd = de.inputPassword(self, "New Password")
         for root, dirs, files in os.walk(self.basedir, topdown=False):
             for name in files:
                 if not name.endswith(".writer"):
                     continue
                 fpath = os.path.join(root, name)
                 print("---processing", fpath)
-                if self.has_pass == False:
-                    with open(fpath, "rt") as file:
-                        content = file.read()
-                else:
-                    content = de.decryptFromFile(old_pswd, fpath)
-                de.encryptToFile(content, pswd, fpath)
-            # for name in dirs:
-            #     print(os.path.join(root, name))
-        self.pswd = pswd
+                content = fs.readTextFile(fpath, self.has_pass, self.pswd)
+                fs.saveTextFile(content, fpath, True, new_pswd)
+        self.pswd = new_pswd
         self.has_pass = True
         self.fs.setConf("has_pass", "True")
         self.fs.saveConf()
 
-    #@MyPyQtSlot()
+    @MyPyQtSlot()
     def delPassword(self, e):
         # q12201 删除文档密码
         from ext import de
@@ -556,9 +549,8 @@ class ToolActions:
                     continue
                 fpath = os.path.join(root, name)
                 print("---processing remove pswd", fpath)
-                content = de.decryptFromFile(old_pswd, fpath)
-                with open(fpath,"wt") as file:
-                    file.write(content)
+                content = fs.readTextFile(fpath, True, old_pswd)
+                fs.saveTextFile(content, fpath)
         self.pswd = ""
         self.has_pass = False
         self.fs.setConf("has_pass", "False")
@@ -589,21 +581,8 @@ class ToolActions:
         if self.filename:
             # Append extension if not there yet
             if not self.filename.endswith(".writer"):
-              self.filename += ".writer"
-
-            tmp_file = self.filename +".tmp"
-            if self.has_pass == False:
-                with open(tmp_file,"wb") as file:
-                    text = self.text.toHtml()
-                    text = text.encode('utf8')
-                    file.write(text)
-            else: # q12201
-                de.encryptToFile(self.text.toHtml(), self.pswd, tmp_file)
-            try:
-                os.remove(self.filename+".bak")
-            except: pass
-            os.rename(self.filename, self.filename+".bak")
-            os.rename(tmp_file, self.filename)
+                self.filename += ".writer"
+            fs.saveTextFile(self.text.toHtml(), self.filename, self.has_pass, self.pswd)
             self.changesSaved = True
             self._title()
 

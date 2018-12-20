@@ -7,7 +7,7 @@ from PyQt5.QtCore import (QAbstractItemModel, QFile, QIODevice,
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import QApplication, QMainWindow, QFileIconProvider
 
-import editabletreemodel_rc
+import treemodel_rc
 
 class TreeItem(object):
     def __init__(self, data, parent=None):
@@ -114,22 +114,6 @@ class TreeModel(QAbstractItemModel):
             return None
         item = self.getItem(index)
         return item.data(index.column())
-
-    def getItem(self, index):
-        if index.isValid():
-            item = index.internalPointer()
-            if item:
-                return item
-        return self.rootItem
-    def index(self, row, column, parent=QModelIndex()):
-        if parent.isValid() and parent.column() != 0:
-            return QModelIndex()
-        parentItem = self.getItem(parent)
-        childItem = parentItem.child(row)
-        if childItem:
-            return self.createIndex(row, column, childItem)
-        else:
-            return QModelIndex()
 
     def parent(self, index):
         if not index.isValid():
@@ -242,3 +226,91 @@ class TreeModel(QAbstractItemModel):
                     c.setData(column, columnData[column])
 
             number += 1
+
+    def getItem(self, index):
+        if index.isValid():
+            item = index.internalPointer()
+            if item:
+                return item
+        return self.rootItem
+    def index(self, row, column, parent=QModelIndex()):
+        if parent.isValid() and parent.column() != 0:
+            return QModelIndex()
+        parentItem = self.getItem(parent)
+        childItem = parentItem.child(row)
+        if childItem:
+            return self.createIndex(row, column, childItem)
+        else:
+            print("-- not found child")
+            return QModelIndex()
+
+def expand(tree, segs):
+    model = tree.model()
+    item = model.rootItem
+    idx = QModelIndex()
+    for seg in segs:
+        for i in range(item.childCount()):
+            ci = item.child(i).itemData
+            if ci[0].startswith(seg):
+                idx = model.index(i, 0, idx)
+                tree.expand(idx)
+                print("expand", seg, idx.row())
+                item = item.child(i)
+                break
+
+from PyQt5 import QtCore, QtGui, QtWidgets
+class MainWindow(QMainWindow):
+    def __init__(self, parent=None):
+        super(MainWindow, self).__init__(parent)
+        self.setupUi(self)
+        headers = ("Title", "Description")
+
+        file = open("./default.txt")
+        model = TreeModel(headers, file.read())
+        file.close()
+
+        self.view.setModel(model)
+        for column in range(model.columnCount()):
+            self.view.resizeColumnToContents(column)
+
+        self.ex()
+
+    def ex(self):
+        tree = self.view
+        model = tree.model()
+        item = model.rootItem
+        idx = QModelIndex()
+        for seg in ["Using a", "Automatic"]:
+            for i in range(item.childCount()):
+                ci = item.child(i).itemData
+                if ci[0].startswith(seg):
+                    idx = model.index(i, 0, idx)
+                    tree.expand(idx)
+                    print("expand", seg, idx.row())
+                    item = item.child(i)
+                    break
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(573, 468)
+        self.centralwidget = QtWidgets.QWidget(MainWindow)
+        self.centralwidget.setObjectName("centralwidget")
+        self.vboxlayout = QtWidgets.QVBoxLayout(self.centralwidget)
+        self.vboxlayout.setContentsMargins(0, 0, 0, 0)
+        self.vboxlayout.setSpacing(0)
+        self.vboxlayout.setObjectName("vboxlayout")
+        self.view = QtWidgets.QTreeView(self.centralwidget)
+        self.view.setAlternatingRowColors(True)
+        self.view.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectItems)
+        self.view.setHorizontalScrollMode(QtWidgets.QAbstractItemView.ScrollPerPixel)
+        self.view.setAnimated(False)
+        self.view.setAllColumnsShowFocus(True)
+        self.view.setObjectName("view")
+        self.vboxlayout.addWidget(self.view)
+        MainWindow.setCentralWidget(self.centralwidget)
+
+if __name__ == '__main__':
+    import sys
+    app = QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec_())

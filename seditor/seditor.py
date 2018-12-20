@@ -57,14 +57,9 @@ class Main(QtWidgets.QMainWindow,
         tree.setSortingEnabled(False)
         self.tree = tree
 
-
-        # Initialize a statusbar for the window
         self.statusbar = self.statusBar()
 
-        # If the cursor position changes, call the function that displays
-        # the line and column number
         text.cursorPositionChanged.connect(self.cursorPosition)
-
         # We need our own context menu for tables
         text.setContextMenuPolicy(Qt.CustomContextMenu)
         text.customContextMenuRequested.connect(self.contextNote)
@@ -130,19 +125,7 @@ class Main(QtWidgets.QMainWindow,
         self.__openNote(data.fpath)
 
     def __openNote(self, fpath):
-        try:
-            # print("__openNote, pswd", repr(self.pswd), fpath)
-            if self.has_pass == False:
-                try:
-                    with open(fpath, "r", encoding='utf8') as file:
-                        text = file.read()
-                except:
-                    with open(fpath, "rt") as file:
-                        text = file.read()
-            else:  # q12201
-                text = de.decryptFromFile(self.pswd, fpath)
-        except:
-            return
+        text = fs.readTextFile(fpath, self.has_pass, self.pswd)
         self.filename = fpath
         self.fs.setConf("last_open", self.fs.rpath(self.filename))
         self.text.setText(text)
@@ -193,23 +176,10 @@ class Main(QtWidgets.QMainWindow,
 
     def _expand_opened_tree(self, last_open, tree):
         # find opened note, expand the tree
-        model = tree.model()
-        item = model.rootItem.child(0)
-        idx_root = model.index(0, 0)
-        idx = model.index(0, 0, idx_root)
-        print("    --", idx.row(), idx.parent().row(), idx_root.row(), idx_root.parent().row())
-        pi = last_open.split(os.path.sep)[:-1]
-        for path_seg in pi:
-            path_seg = path_seg + "/"
-            #print("---path_seg", path_seg)
-            for i in range(item.childCount()):
-                c = item.child(i)
-                if c.itemData.name == path_seg:
-                    idx = model.index(i, 0, parent=idx)
-                    tree.expand(idx)
-                    item = c
-                    print("    --", i, c.itemData.name, idx.row(), idx.column())
-                    break
+        import treemodel
+        segs = last_open.split(os.path.sep)[:-1]
+        segs.insert(0, self.basedir.split(os.path.sep)[-1])
+        treemodel.expand(tree, [s+"/" for s in segs])
 
 
 
