@@ -245,17 +245,20 @@ class TreeModel(QAbstractItemModel):
             return QModelIndex()
 
 def expand(tree, segs):
+    print("----segs", segs)
     model = tree.model()
     item = model.rootItem
     idx = QModelIndex()
     for seg in segs:
         for i in range(item.childCount()):
             ci = item.child(i).itemData
-            if ci[0].startswith(seg):
+            if ci.name == seg:
                 idx = model.index(i, 0, idx)
-                tree.expand(idx)
-                print("expand", seg, idx.row())
+                tree.selectionModel().select(idx, QtCore.QItemSelectionModel.ClearAndSelect)
                 item = item.child(i)
+                if item.childCount() > 0:
+                    tree.expand(idx)
+                # print("expand", seg, idx.row())
                 break
 
 from PyQt5 import QtCore, QtGui, QtWidgets

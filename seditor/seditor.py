@@ -115,16 +115,19 @@ class Main(QtWidgets.QMainWindow,
             self.text.contextMenuEvent(event)
 
     def noteOpen(self, index):
+        '''event-handler: 双击tree节点打开文档'''
         data = self.tree.model().getItem(index).itemData
         if data.type == fs.ItemType.DIR:
             return
         if self.filename == data.fpath:
             return
         if not self.changesSaved:
+            # TODO 切换note的时候, 应该提示是否保存, 可选择不另外打开
             self.save()
         self.__openNote(data.fpath)
 
     def __openNote(self, fpath):
+        '''实际执行打开文档'''
         text = fs.readTextFile(fpath, self.has_pass, self.pswd)
         self.filename = fpath
         self.fs.setConf("last_open", self.fs.rpath(self.filename))
@@ -139,6 +142,7 @@ class Main(QtWidgets.QMainWindow,
         #     self.text.setTextCursor(cursor)
 
     def _openWorkDir(self, wd=None):
+        '''打开工作目录'''
         if wd is None:
             wd = fs.FS.getRecentDirs()[-1]
         if wd == self.basedir:
@@ -149,8 +153,8 @@ class Main(QtWidgets.QMainWindow,
         self.fs = fs.FS(self.basedir)
         model = TreeModel(None, self.fs.loadDir())
         tree.setModel(model)
-        for i in range(2, model.columnCount()):
-            tree.setColumnHidden(i, True)
+        for i in range(1, model.columnCount()):
+            tree.setColumnHidden(i, True)  # 隐藏其它列
 
         fs.FS.addRecentDir(wd)
 
@@ -170,16 +174,17 @@ class Main(QtWidgets.QMainWindow,
             v = [int(i) for i in win_geo.split(",")]
             self.win_geo = QtCore.QRect(v[0], v[1], v[2], v[3])
 
-        idx_root = model.index(0, 0)
-        tree.expand(idx_root)
         self._expand_opened_tree(last_open, tree)
 
     def _expand_opened_tree(self, last_open, tree):
-        # find opened note, expand the tree
+        ''' find opened note, expand the tree '''
         import treemodel
-        segs = last_open.split(os.path.sep)[:-1]
+        # 组合需要逐级展开的 tree-path
+        segs = last_open.split(os.path.sep)
         segs.insert(0, self.basedir.split(os.path.sep)[-1])
-        treemodel.expand(tree, [s+"/" for s in segs])
+        nsegs = [i+"/" for i in segs[:-1]]
+        nsegs.append(segs[-1][:-7]) #添加文件名并去掉 .writer
+        treemodel.expand(tree, nsegs)
 
 
 
