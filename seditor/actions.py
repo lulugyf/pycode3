@@ -566,7 +566,7 @@ class WorkspaceAction:
     def gitpull(self, e):
         from ext import de
         msg = de.git_pull(self.basedir, self)
-        if msg.find("master -> master") > 0:
+        if msg.find("Updating ") > 0 and msg.find("-> origin/master"):
             '''TODO: reopen workspace, keep password if exists'''
             self._openWorkDir(self.basedir, reopen=True)
 
