@@ -507,6 +507,7 @@ class ToolActions:
         cursor = self.text.textCursor()
         cursor.insertImage(image, cpath)
 
+class WorkspaceAction:
     @MyPyQtSlot()
     def setPassword(self, e):
         # q12201 设置或修改文档密码
@@ -564,7 +565,10 @@ class ToolActions:
     @MyPyQtSlot()
     def gitpull(self, e):
         from ext import de
-        de.git_pull(self.basedir, self)
+        msg = de.git_pull(self.basedir, self)
+        if msg.find("master -> master") > 0:
+            '''TODO: reopen workspace, keep password if exists'''
+            self._openWorkDir(self.basedir, reopen=True)
 
     @MyPyQtSlot()
     def gitpush(self, e):

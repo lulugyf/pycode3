@@ -24,7 +24,8 @@ class Main(QtWidgets.QMainWindow,
            actions.TreeActions,
            actions.TableActions,
            actions.FormatActions,
-           actions.ToolActions):
+           actions.ToolActions,
+           actions.WorkspaceAction):
 
     def __init__(self,parent=None):
         QtWidgets.QMainWindow.__init__(self,parent)
@@ -141,7 +142,7 @@ class Main(QtWidgets.QMainWindow,
         #     cursor.setPosition(int(curpos))
         #     self.text.setTextCursor(cursor)
 
-    def _openWorkDir(self, wd=None):
+    def _openWorkDir(self, wd=None, reopen=False):
         '''打开工作目录'''
         if wd is None:
             wd = fs.FS.getRecentDirs()[-1]
@@ -158,13 +159,14 @@ class Main(QtWidgets.QMainWindow,
 
         fs.FS.addRecentDir(wd)
 
-        has_pass = self.fs.getConf("has_pass")
-        if has_pass == "True":
-            self.pswd = de.inputPassword(self)
-            self.has_pass = True
-        else:
-            self.pswd = ""
-            self.has_pass = False
+        if not reopen:
+            has_pass = self.fs.getConf("has_pass")
+            if has_pass == "True":
+                self.pswd = de.inputPassword(self)
+                self.has_pass = True
+            else:
+                self.pswd = ""
+                self.has_pass = False
 
         last_open = self.fs.getConf("last_open")
         if last_open != "":

@@ -23,6 +23,7 @@ def __exec(cmd, cwd):
 def git_pull(wdir, parent=None):
     msg = __exec(["git", "pull"], wdir)
     warn(msg, "Pull output", parent)
+    return msg
 
 def git_push(wdir, comment="[comment]", parent=None):
     comment, ok = QtWidgets.QInputDialog.getText(parent, "Comment",
