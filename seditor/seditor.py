@@ -35,45 +35,13 @@ class Main(QtWidgets.QMainWindow,
         self.initUI()
 
     def initUI(self):
-        text = QtWidgets.QTextEdit(self)
-        self.text = text
-
-        # Set the tab stop width to around 33 pixels which is
-        # more or less 8 spaces
-        text.setTabStopWidth(33)
+        self.initTreeAndContentView()
 
         self.initToolbar()
         self.initFormatbar()
         self.initMenubar()
         self.addRecentToFileMenu(fs.FS.getRecentDirs())
 
-
-        tree = QtWidgets.QTreeView(self)
-
-        # tree.setHeaderHidden(True)
-        tree.doubleClicked.connect(self.noteOpen)
-        tree.setContextMenuPolicy(Qt.CustomContextMenu)
-        tree.customContextMenuRequested.connect(self.contextTree)
-        tree.setRootIsDecorated(True)
-        tree.setSortingEnabled(False)
-        self.tree = tree
-
-        self.statusbar = self.statusBar()
-
-        text.cursorPositionChanged.connect(self.cursorPosition)
-        # We need our own context menu for tables
-        text.setContextMenuPolicy(Qt.CustomContextMenu)
-        text.customContextMenuRequested.connect(self.contextNote)
-        text.textChanged.connect(self.changed)
-
-        splitter1 = QtWidgets.QSplitter(Qt.Horizontal, self)
-        splitter1.addWidget(self.tree)
-        splitter1.addWidget(text)
-        self.setCentralWidget(splitter1)
-
-        w = self.geometry().width()
-        tree_percent = 0.2
-        splitter1.setSizes([int(w*tree_percent), int(w*(1-tree_percent))])
         # self.setWindowTitle("sedit Note Writer")
         self.setWindowIcon(QtGui.QIcon("icons/th.jpg"))
 
@@ -115,6 +83,20 @@ class Main(QtWidgets.QMainWindow,
             event = QtGui.QContextMenuEvent(QtGui.QContextMenuEvent.Mouse,QtCore.QPoint())
             self.text.contextMenuEvent(event)
 
+    def treeSelChg(self, sel, desel):
+        '''tree item selection changed, save the last selection'''
+        try:
+            first = desel.first()
+            if first is None:
+                return
+            idxs = first.indexes()
+            if len(idxs) > 0:
+                self.last_sel = idxs[0]
+        except Exception as e:
+            print("treeSelChg failed")
+            import traceback
+            traceback.print_exc()
+
     def noteOpen(self, index):
         '''event-handler: 双击tree节点打开文档'''
         data = self.tree.model().getItem(index).itemData
@@ -123,8 +105,15 @@ class Main(QtWidgets.QMainWindow,
         if self.filename == data.fpath:
             return
         if not self.changesSaved:
-            # TODO 切换note的时候, 应该提示是否保存, 可选择不另外打开
-            self.save()
+            # Done 切换note的时候, 应该提示是否保存, 可选择不另外打开
+            if self._confirm("Original note had been changed!", "Do you want save it first?"):
+                self.save()
+            else:
+                if hasattr(self, "last_sel"):
+                    # 恢复上次的选择
+                    idx = self.last_sel
+                    self.tree.selectionModel().select(idx, QtCore.QItemSelectionModel.ClearAndSelect)
+                return
         self.__openNote(data.fpath)
 
     def __openNote(self, fpath):
@@ -142,6 +131,8 @@ class Main(QtWidgets.QMainWindow,
         #     cursor.setPosition(int(curpos))
         #     self.text.setTextCursor(cursor)
 
+
+
     def _openWorkDir(self, wd=None, reopen=False):
         '''打开工作目录'''
         if wd is None:
@@ -154,6 +145,7 @@ class Main(QtWidgets.QMainWindow,
         self.fs = fs.FS(self.basedir)
         model = TreeModel(None, self.fs.loadDir())
         tree.setModel(model)
+        self.tree.selectionModel().selectionChanged.connect(self.treeSelChg)
         for i in range(1, model.columnCount()):
             tree.setColumnHidden(i, True)  # 隐藏其它列
 

@@ -12,6 +12,42 @@ from PyQt5.QtCore import Qt
 from ext import datetime, find, table, wordcount
 
 class UISetup:
+    def initTreeAndContentView(self):
+        text = QtWidgets.QTextEdit(self)
+        self.text = text
+
+        # Set the tab stop width to around 33 pixels which is
+        # more or less 8 spaces
+        text.setTabStopWidth(33)
+
+        tree = QtWidgets.QTreeView(self)
+
+        # tree.setHeaderHidden(True)
+        tree.doubleClicked.connect(self.noteOpen)
+        tree.setContextMenuPolicy(Qt.CustomContextMenu)
+        tree.customContextMenuRequested.connect(self.contextTree)
+        tree.setRootIsDecorated(True)
+        tree.setSortingEnabled(False)
+        self.tree = tree
+
+        self.statusbar = self.statusBar()
+
+        text.cursorPositionChanged.connect(self.cursorPosition)
+        # We need our own context menu for tables
+        text.setContextMenuPolicy(Qt.CustomContextMenu)
+        text.customContextMenuRequested.connect(self.contextNote)
+        text.textChanged.connect(self.changed)
+
+        splitter1 = QtWidgets.QSplitter(Qt.Horizontal, self)
+        splitter1.addWidget(self.tree)
+        splitter1.addWidget(text)
+        self.setCentralWidget(splitter1)
+
+        w = self.geometry().width()
+        tree_percent = 0.2
+        splitter1.setSizes([int(w*tree_percent), int(w*(1-tree_percent))])
+
+
     def initToolbar(self):
         self.newAction = QtWidgets.QAction(QtGui.QIcon("icons/new.png"), "New", self)
         self.newAction.setShortcut("Ctrl+N")
@@ -340,6 +376,21 @@ class UISetup:
                 event.accept()
             else:
                 event.ignore()
+
+    def _confirm(self, text, inform):
+        popup = QtWidgets.QMessageBox(self)
+        popup.setIcon(QtWidgets.QMessageBox.Warning)
+        popup.setText(text)
+        popup.setInformativeText(inform)
+        popup.setStandardButtons(QtWidgets.QMessageBox.Ok |
+                                 QtWidgets.QMessageBox.Cancel)
+
+        popup.setDefaultButton(QtWidgets.QMessageBox.Save)
+        answer = popup.exec_()
+        if answer == QtWidgets.QMessageBox.Ok:
+            return True
+        else:
+            return False
 
 def showTableContextMenu(table, pos, cursor, self):
     menu = QtWidgets.QMenu(self)
