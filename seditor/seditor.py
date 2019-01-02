@@ -18,6 +18,7 @@ import actions
 import fs
 from ext import de
 from treemodel import TreeModel
+import traceback
 
 class Main(QtWidgets.QMainWindow,
            ui.UISetup,
@@ -35,17 +36,20 @@ class Main(QtWidgets.QMainWindow,
         self.initUI()
 
     def initUI(self):
-        self.initTreeAndContentView()
+        try:
+            self.initTreeAndContentView()
 
-        self.initToolbar()
-        self.initFormatbar()
-        self.initMenubar()
-        self.addRecentToFileMenu(fs.FS.getRecentDirs())
+            self.initToolbar()
+            self.initFormatbar()
+            self.initMenubar()
+            self.addRecentToFileMenu(fs.FS.getRecentDirs())
 
-        # self.setWindowTitle("sedit Note Writer")
-        self.setWindowIcon(QtGui.QIcon("icons/th.jpg"))
+            # self.setWindowTitle("sedit Note Writer")
+            self.setWindowIcon(QtGui.QIcon("icons/th.jpg"))
 
-        self._openWorkDir()
+            self._openWorkDir()
+        except:
+            traceback.print_exc()
         #self._title()
 
     def _title(self, changeSave=True):
@@ -132,7 +136,6 @@ class Main(QtWidgets.QMainWindow,
         #     self.text.setTextCursor(cursor)
 
 
-
     def _openWorkDir(self, wd=None, reopen=False):
         '''打开工作目录'''
         if wd is None:
@@ -145,7 +148,6 @@ class Main(QtWidgets.QMainWindow,
         self.fs = fs.FS(self.basedir)
         model = TreeModel(None, self.fs.loadDir())
         tree.setModel(model)
-        self.tree.selectionModel().selectionChanged.connect(self.treeSelChg)
         for i in range(1, model.columnCount()):
             tree.setColumnHidden(i, True)  # 隐藏其它列
 
@@ -168,7 +170,10 @@ class Main(QtWidgets.QMainWindow,
             v = [int(i) for i in win_geo.split(",")]
             self.win_geo = QtCore.QRect(v[0], v[1], v[2], v[3])
 
-        self._expand_opened_tree(last_open, tree)
+        self.last_sel = self._expand_opened_tree(last_open, tree)
+        if not hasattr(self, 'selchangedevent'):
+            self.tree.selectionModel().selectionChanged.connect(self.treeSelChg) #这个放在上个语句前, 有打不开的情况
+            self.selchangedevent = True
 
     def _expand_opened_tree(self, last_open, tree):
         ''' find opened note, expand the tree '''
@@ -178,9 +183,7 @@ class Main(QtWidgets.QMainWindow,
         segs.insert(0, self.basedir.split(os.path.sep)[-1])
         nsegs = [i+"/" for i in segs[:-1]]
         nsegs.append(segs[-1][:-7]) #添加文件名并去掉 .writer
-        treemodel.expand(tree, nsegs)
-
-
+        return treemodel.expand(tree, nsegs)
 
 def main():
     app = QtWidgets.QApplication(sys.argv)

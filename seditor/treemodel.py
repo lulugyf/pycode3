@@ -260,6 +260,7 @@ def expand(tree, segs):
                     tree.expand(idx)
                 # print("expand", seg, idx.row())
                 break
+    return idx
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 class MainWindow(QMainWindow):
