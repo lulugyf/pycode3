@@ -14,6 +14,7 @@ from ext import datetime, find, table, wordcount
 class UISetup:
     def initTreeAndContentView(self):
         text = QtWidgets.QTextEdit(self)
+        text.setStyleSheet('font: 12pt "Courier";')
         self.text = text
 
         # Set the tab stop width to around 33 pixels which is
