@@ -29,12 +29,9 @@ class DateTime(QtWidgets.QDialog):
         self.initUI()
  
     def initUI(self):
- 
         self.box = QtWidgets.QComboBox(self)
-
         for i in self.formats:
             self.box.addItem(strftime(i))
-
         insert = QtWidgets.QPushButton("Insert",self)
         insert.clicked.connect(self.insert)
  
@@ -52,12 +49,9 @@ class DateTime(QtWidgets.QDialog):
         self.setLayout(layout)
 
     def insert(self):
-
         # Grab cursor
         cursor = self.parent.text.textCursor()
-
         datetime = strftime(self.formats[self.box.currentIndex()])
-
         # Insert the comboBox's current text
         cursor.insertText(datetime)
 

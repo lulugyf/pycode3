@@ -176,7 +176,6 @@ class UISetup:
         self.addToolBarBreak()
 
     def initFormatbar(self):
-
         fontBox = QtWidgets.QFontComboBox(self)
         fontBox.currentFontChanged.connect(lambda font: self.text.setCurrentFont(font))
 
@@ -282,12 +281,17 @@ class UISetup:
         file.addAction(self.printAction)
         file.addAction(self.previewAction)
 
+        pastePlain = QtWidgets.QAction("Paste plain",self)
+        pastePlain.setShortcut("Ctrl+G")
+        pastePlain.triggered.connect(self.pastePlain)
+
         edit.addAction(self.undoAction)
         edit.addAction(self.redoAction)
         edit.addAction(self.cutAction)
         edit.addAction(self.copyAction)
         edit.addAction(self.pasteAction)
         edit.addAction(self.findAction)
+        edit.addAction(pastePlain)
 
         # Toggling actions for the various bars
         toolbarAction = QtWidgets.QAction("Toggle Toolbar",self)

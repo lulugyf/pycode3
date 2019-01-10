@@ -507,6 +507,20 @@ class ToolActions:
         cursor = self.text.textCursor()
         cursor.insertImage(image, cpath)
 
+    def pastePlain(self, n):
+        # print("Ctrl+G triggered")
+        try:
+            clip = QApplication.clipboard()
+            mimeData = clip.mimeData()
+            if mimeData.hasText():
+                # print("hasText")
+                text = mimeData.text()
+                cursor = self.text.textCursor()
+                cursor.insertText(text)
+        except:
+            traceback.print_stack()
+
+
 class WorkspaceAction:
     @MyPyQtSlot()
     def setPassword(self, e):
